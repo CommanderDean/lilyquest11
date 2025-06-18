@@ -715,21 +715,32 @@
 
         // --- DRAG AND DROP ---
         let draggedSymbol = null;
-        
+        let ghostSymbol = null; // For touch events
+
         function addDragListeners() {
             const symbols = document.querySelectorAll('.symbol-icon');
             symbols.forEach(symbol => {
+                // Mouse events
                 symbol.addEventListener('dragstart', handleDragStart);
                 symbol.addEventListener('dragend', handleDragEnd);
+
+                // Touch events
+                symbol.addEventListener('touchstart', handleTouchStart);
+                symbol.addEventListener('touchend', handleTouchEnd);
             });
 
             codeSlots.forEach(slot => {
+                // Mouse events
                 slot.addEventListener('dragover', handleDragOver);
                 slot.addEventListener('dragleave', handleDragLeave);
                 slot.addEventListener('drop', handleDrop);
+
+                // Touch events
+                slot.addEventListener('touchmove', handleTouchMove);
             });
         }
         
+        // --- Mouse Drag Handlers ---
         function handleDragStart(e) {
             draggedSymbol = e.target;
             setTimeout(() => e.target.classList.add('dragging'), 0);
@@ -740,7 +751,7 @@
         }
 
         function handleDragOver(e) {
-            e.preventDefault();
+            e.preventDefault(); // Necessary to allow drop
             e.target.closest('.slot').classList.add('drag-over');
         }
 
@@ -754,19 +765,89 @@
             slot.classList.remove('drag-over');
             
             if (draggedSymbol && slot) {
-                playSoundEffect(clickSoundFile);
-                const slotIndex = parseInt(slot.dataset.slotIndex);
-                // Clear previous symbol if any
-                slot.innerHTML = '';
-                // Clone the symbol to drop it in
-                const clonedSymbol = draggedSymbol.cloneNode(true);
-                clonedSymbol.classList.remove('dragging');
-                clonedSymbol.draggable = false;
-                slot.appendChild(clonedSymbol);
-                
-                // Store the code
-                userInputCode[slotIndex] = draggedSymbol.dataset.symbolId;
+                placeSymbolInSlot(draggedSymbol, slot);
             }
+        }
+
+        // --- Touch Drag Handlers ---
+        function handleTouchStart(e) {
+            e.preventDefault(); // Prevent scrolling and default touch behavior
+            draggedSymbol = e.target;
+            draggedSymbol.classList.add('dragging');
+
+            // Create a ghost element for visual feedback
+            ghostSymbol = draggedSymbol.cloneNode(true);
+            ghostSymbol.classList.add('dragging'); // Keep the dragging style
+            ghostSymbol.style.position = 'absolute';
+            ghostSymbol.style.zIndex = '1000';
+            ghostSymbol.style.pointerEvents = 'none'; // Ensure it doesn't interfere with touch events
+            ghostSymbol.style.width = draggedSymbol.offsetWidth + 'px';
+            ghostSymbol.style.height = draggedSymbol.offsetHeight + 'px';
+            document.body.appendChild(ghostSymbol);
+
+            // Position the ghost symbol at the touch location
+            updateGhostPosition(e.touches[0].clientX, e.touches[0].clientY);
+
+            // Add global touchmove listener to track finger movement
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault(); // Prevent scrolling while dragging
+            const touch = e.touches[0];
+            updateGhostPosition(touch.clientX, touch.clientY);
+
+            // Check for slot hover (drag-over effect)
+            const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+            codeSlots.forEach(slot => {
+                if (slot.contains(targetElement) && !slot.classList.contains('drag-over')) {
+                    slot.classList.add('drag-over');
+                } else if (!slot.contains(targetElement) && slot.classList.contains('drag-over')) {
+                    slot.classList.remove('drag-over');
+                }
+            });
+        }
+
+        function handleTouchEnd(e) {
+            draggedSymbol.classList.remove('dragging');
+            document.removeEventListener('touchmove', handleTouchMove);
+
+            if (ghostSymbol) {
+                ghostSymbol.remove();
+                ghostSymbol = null;
+            }
+
+            const touch = e.changedTouches[0];
+            const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+            const slot = targetElement ? targetElement.closest('.slot') : null;
+
+            if (slot) {
+                slot.classList.remove('drag-over');
+                placeSymbolInSlot(draggedSymbol, slot);
+            }
+            draggedSymbol = null; // Reset dragged symbol
+        }
+
+        function updateGhostPosition(x, y) {
+            if (ghostSymbol) {
+                ghostSymbol.style.left = x - ghostSymbol.offsetWidth / 2 + 'px';
+                ghostSymbol.style.top = y - ghostSymbol.offsetHeight / 2 + 'px';
+            }
+        }
+
+        function placeSymbolInSlot(symbol, slot) {
+            playSoundEffect(clickSoundFile);
+            const slotIndex = parseInt(slot.dataset.slotIndex);
+            // Clear previous symbol if any
+            slot.innerHTML = '';
+            // Clone the symbol to drop it in
+            const clonedSymbol = symbol.cloneNode(true);
+            clonedSymbol.classList.remove('dragging');
+            clonedSymbol.draggable = false; // Not draggable once placed
+            slot.appendChild(clonedSymbol);
+            
+            // Store the code
+            userInputCode[slotIndex] = symbol.dataset.symbolId;
         }
 
         // --- UTILITY & INIT ---
