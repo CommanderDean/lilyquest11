@@ -1,0 +1,112 @@
+Web App Development Plan: Lincoln's Wizard's Table Quest 🧙‍♂️📜 
+
+To the AI Developer: This document outlines the plan for creating a web application for Dean Watkin's son, Lincoln. Please follow these specifications to build the interactive game.
+1. Project Overview & Goal The goal is to develop an interactive web application themed around a "Wizard's Table." Lincoln will interact with a crystal ball on this table. The crystal ball will provide audio clues (voiced by Dean) to help Lincoln find physical 4-digit codes hidden in the real world. Lincoln will then use these codes (which this AI will generate) within the web app to solve a series of symbol-based puzzles, progressively unlocking mystical items or secrets on the wizard's table. The game culminates when all 10 puzzles are solved. This app is intended to be minimalistic in UI but rich in atmosphere.
+2. Target User
+Primary User: Lincoln (Dean's son, born 2017, approx. 8 years old).
+Considerations: Puzzles and interactions should be intuitive and engaging for this age group.
+3. Core Gameplay Loop The game progresses through a loop for each hidden code/puzzle:
+Initial Introduction (First-time Play):
+The Crystal Ball on the Wizard's Table gives an overall introduction to the quest (audio provided by Dean).
+For Each of the 10 Puzzles (e.g., Puzzle N):
+(A) Audio Clue Delivery: The Crystal Ball plays a specific audio clue from the main crystal ball page (provided by Dean) that directs Lincoln to find the physical 4-digit code for Puzzle N in the house. This becomes the "last played message."
+(B) Physical Code Search: Lincoln uses the audio clue to find the hidden 4-digit code.
+(C) Puzzle Interaction & Solving: Lincoln returns to the web app. He sees a "locked" item on the wizard's table and a puzzle interface. He uses the 4-digit code he found to solve the Symbol Alignment Puzzle.
+(D) Unlocking & Progression:
+Correct Code: The item on the table unlocks with a visual/audio flourish. The app then progresses to deliver the audio clue for the next puzzle (N+1).
+Incorrect Code: A gentle error indication is given, and Lincoln can try solving the puzzle again.
+Game Completion: After all 10 puzzles are solved, a final congratulatory message and animation are displayed.
+Replay Last Message: At any point after an audio message has played (intro or clue), Lincoln can trigger a replay of that last played Crystal Ball message.
+4. Number of Puzzles & AI Code Generation
+The game will consist of 10 puzzles.
+AI Task - Code Generation:
+You (the AI developer) will generate 10 unique 4-digit codes.
+Each code will use digits from 1 to 8 (e.g., "1835", "2471", "6382"). This is because each puzzle's symbol palette will contain 8 symbols for selection (1-indexed).
+Crucial Output: You must provide the list of these 10 generated codes to Dean, as he will need to hide them physically.
+5. Assets & Information
+Dean Will Provide:
+
+
+🎙️ Main Introductory Audio File: For the initial Crystal Ball speech. (Format: MP3 or WAV).
+🎙️ Series of 10 Audio Clue Files: One separate audio file for each of the 10 puzzles, guiding Lincoln to the next physical code. (Format: MP3 or WAV).
+
+AI Will Generate/Handle:
+
+
+🔢 The 10 four-digit codes (as specified above).
+🎨 All visual assets if not specifically provided by Dean. This includes:
+The Wizard's Table background.
+The Crystal Ball (static and glowing states).
+locked item graphic (let's make it a door).
+8 unique symbols.
+Image Generation & Swapping:
+Dean can create the images but he will need guidance for what images need to be generated.
+AI-generated images should be thematic and clear.
+The system should be built such that image file paths (in the puzzle configuration data) can be easily updated by Dean if he chooses to create and use his own custom images later.
+Guidance for Image Dimensions (if Dean creates them):
+Background (Wizard's Table): Full screen (e.g., 1920x1080px) or a high-quality tileable texture.
+Crystal Ball: Approx. 200x200px to 400x400px.
+Locked Item: Approx. 150x150px to 300x300px.
+Symbols (10 sets of 8): Clear and distinct, approx. 50x50px to 80x80px each.
+Format: SVGs for symbols/simple items; PNGs (with transparency) or JPEGs for complex/textured items.
+
+6. Detailed Design & Functionality
+6.1. Visual Design: The Wizard's Table
+Main View: A wizard's table as the primary setting.
+Crystal Ball: Prominent on the table.
+"Locked doors": 10 unique doors unlock sequentially.
+Replay Message UI:
+A visually intuitive and always accessible mechanism to replay the last Crystal Ball message. This could be:
+whenever the user is on the crystal ball screen.  Tapping the crystal ball will play the latest message.
+Atmosphere: Magical, mysterious, inviting.
+6.2. Audio System
+Crystal Ball "Speaking" Effect: Glow intensity syncs with audio volume (Web Audio API). This effect should also occur during message replays.
+Sound Effects: For successful unlocks, incorrect attempts, and symbol clicks.
+Replay Last Message Logic:
+The application must store a reference (e.g., file path) to the last audio message played by the Crystal Ball (whether it was the intro or one of the 10 clues).
+Activating the "Replay Message" UI element will play this stored audio file again, complete with the Crystal Ball glow effect.
+6.3. Standardised Puzzle Mechanic: Symbol Alignment Challenge All 10 puzzles use this mechanic.
+Visuals for Each Puzzle N:
+A unique "locked item" graphic.
+Four empty slots for symbol input.
+A palette of 8 unique symbols specific to Puzzle N, displayed in a fixed order.
+Interaction:
+Lincoln uses his 4-digit code (composed of digits 1-8, e.g., "2518").
+Digits correspond to the 1-indexed position of symbols in the current puzzle's palette.
+"Clear/Reset Slots" and "Unlock/Check Code" buttons are essential.
+Code Logic: Compares selected symbol sequence against the correctCode for the current puzzle.
+6.4. Game scenes.
+There will be two main scenes that the user will change between.  One is the crystal ball and the other is the locked door.
+On the crystal ball scene there will be a door icon to go to the door. On the door scene there will be an icon to get to the crystal ball.
+Crystal ball scene: This is where the player listens to the latest instructions from the crystal ball. These instructions will change as the game progresses.
+Door scene:  This will be the scene where the player solves the puzzle. There will be an image of a door with 4 slots for the code. Beside the door will be the 8 code symbols that can be dragged into the door slots. Somehow we need to give a clue that the order of the code symbols is imortant since the user will need to figure out that each symbol represents a number.
+Note scene: Behind the last door will be a note.  This note will tell lincoln the location of his pbirthday present. Lincoln the note scene will include an icon that leads back to the crystal ball.  When the player has reached the crystal ball then the crystal ball scene will have an icon that leads to the note instead of the door.    
+6.5. Game State & Data Management
+A JavaScript array of 10 puzzle configuration objects. AI Developer will populate this, including the AI-generated correctCode for each.
+ JavaScript
+// Example structure for each puzzle object
+{
+  puzzleId: 1, // (1 to 10)
+  audioClueFile: 'path_to_dean_audio/clue_1.mp3', // Dean provides path pattern
+  correctCode: '1835', // AI generates (digits 1-8) & provides to Dean
+  symbolPalette: [ // AI generates 8 unique symbols for this puzzle
+    { id: 'puzzle1_sym1', image: 'path/to/ai_images/p1_s1.svg' }, 
+    // ... 7 more symbols
+  ],
+  lockedItemGraphic: 'path/to/ai_images/locked_item_1.png', // AI generates
+  // ...
+}
+
+
+Track current puzzle index, game state, and the path to the last played audio message.
+
+7. Technical Specifications
+Core Technologies: HTML5, CSS3, JavaScript (ES6+).
+Graphics: SVGs / PNGs / JPEGs as appropriate. Images easily replaceable via paths in config.
+Audio: HTML5 <audio> and Web Audio API.
+Responsiveness: Essential.
+No Backend: Purely client-side.
+
+
+
+

@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Quest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+    <style>
+        /* General Setup */
+        :root {
+            --primary-bg: #1a1a2e;
+            --secondary-bg: #16213e;
+            --accent-purple: #9a4cff;
+            --accent-gold: #f7d716;
+            --light-text: #e0e0e0;
+            --glow-color: #c792ea;
+            --door-color: #6B4F3A;
+            --door-frame: #4a3728;
+            --symbol-bg: #2a2a4a;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'IM Fell English SC', serif;
+        }
+
+        body {
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            color: var(--light-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .game-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Scene Management */
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 0.5s, opacity 0.5s linear;
+        }
+
+        .scene.active {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.5s linear;
+        }
+        
+        /* Navigation Icons */
+        .nav-icon {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border: 2px solid var(--accent-gold);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-icon:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-icon svg {
+            width: 35px;
+            height: 35px;
+            fill: var(--accent-gold);
+        }
+
+        /* Navigation Hint */
+        .nav-hint {
+            position: absolute;
+            bottom: 35px; /* Align with the nav-icon */
+            right: 90px; /* Position to the left of the nav-icon */
+            display: flex;
+            align-items: center;
+            color: var(--light-text);
+            font-size: 1.1rem;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+            z-index: 99; /* Below nav-icon but above other elements */
+        }
+
+        .nav-hint.hidden {
+            opacity: 0;
+            pointer-events: none; /* Make it unclickable when hidden */
+        }
+
+        .hint-text {
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+
+        .hint-arrow {
+            font-size: 2rem; /* Larger arrow */
+            line-height: 1;
+            color: var(--accent-gold);
+            animation: bounceArrow 1s infinite; /* Simple animation */
+        }
+
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
+        }
+
+        /* Crystal Ball Scene */
+        #crystal-ball-scene h1 {
+            font-family: 'MedievalSharp', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 220px; /* Moved up even further */
+            color: var(--accent-gold);
+            text-shadow: 0 0 10px var(--accent-gold);
+        }
+
+        .crystal-ball-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+
+        #crystal-ball-image {
+            width: 250px;
+            height: 250px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1; /* Ensure orb is in front of glow */
+        }
+        
+        .crystal-ball-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px; /* Smaller base size */
+            height: 150px; /* Smaller base size */
+            border-radius: 50%;
+            background: var(--glow-color);
+            opacity: 0.7;
+            filter: blur(50px);
+            transition: transform 0.1s ease-in-out, opacity 0.1s ease-in-out;
+            pointer-events: none;
+            transform-origin: center;
+            z-index: 0; /* Place glow behind the orb */
+        }
+
+        .crystal-ball-container p {
+            /* This rule is for the p inside crystal-ball-container, not the prompt.
+               The prompt is a direct child of #crystal-ball-scene. */
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-style: italic;
+        }
+        /* Adjust the prompt text margin */
+        #crystal-ball-prompt {
+            margin-top: 150px; /* Increased margin to push it down */
+        }
+        
+        /* Puzzle Scene */
+        .puzzle-layout {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px;
+            padding: 20px;
+            max-width: 1000px;
+        }
+
+        .door-area, .symbol-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .locked-door {
+            width: 250px;
+            height: 350px;
+            background-color: var(--door-color);
+            border: 10px solid var(--door-frame);
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .locked-door.unlocked {
+            transform: perspective(1200px) rotateY(90deg);
+        }
+
+        .code-slots {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .slot {
+            width: 60px;
+            height: 60px;
+            background: var(--secondary-bg);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .slot.drag-over {
+            background: var(--accent-purple);
+            opacity: 0.5;
+        }
+
+        .slot .symbol-icon {
+            cursor: default;
+        }
+
+        .symbol-area h2 {
+            margin-bottom: 0;
+            color: var(--accent-gold);
+        }
+
+        .symbol-palette {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            background: var(--primary-bg);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--accent-gold);
+        }
+
+        .symbol-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--symbol-bg);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            transition: all 0.2s;
+        }
+
+        .symbol-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px var(--accent-purple);
+        }
+        
+        .symbol-icon.dragging {
+            opacity: 0.5;
+        }
+
+        .symbol-icon svg {
+            width: 70%;
+            height: 70%;
+            fill: var(--light-text);
+            pointer-events: none; /* Important for drag and drop */
+        }
+
+        .puzzle-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .puzzle-btn {
+            padding: 12px 25px;
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1.2rem;
+            background: var(--accent-gold);
+            color: var(--primary-bg);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .puzzle-btn:hover {
+            background: var(--accent-purple);
+            color: var(--light-text);
+            transform: translateY(-2px);
+        }
+
+        #clear-btn {
+            background: #888;
+            color: #fff;
+        }
+         #clear-btn:hover {
+            background: #666;
+         }
+
+        /* Note Scene */
+        #note-scene {
+            background: rgba(0,0,0,0.5);
+        }
+
+        .note-paper {
+            background: #fdf5e6; /* Parchment color */
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+            border: 2px solid #d2b48c;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+            color: #5d4037;
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1.5rem;
+            line-height: 1.8;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .note-paper h2 {
+             color: #8b4513;
+        }
+
+        /* Message Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .modal.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-content {
+            background: var(--secondary-bg);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid var(--accent-gold);
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--light-text);
+            box-shadow: 0 0 20px var(--accent-purple);
+        }
+        .modal-content.error {
+            border-color: #e57373;
+            box-shadow: 0 0 20px #e57373;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- SCENE 1: THE CRYSTAL BALL -->
+        <div id="crystal-ball-scene" class="scene active">
+            <h1>Birthday Quest</h1>
+            <div class="crystal-ball-container" id="crystal-ball-activator">
+                <div class="crystal-ball-glow"></div>
+                <img id="crystal-ball-image" src="images/orb.png" alt="Crystal Ball">
+            </div>
+            <p id="crystal-ball-prompt"></p>
+
+            <!-- New Hint Element -->
+            <div id="puzzle-nav-hint" class="nav-hint">
+                <span class="hint-text">Click here to see the door</span>
+                <span class="hint-arrow">→</span>
+            </div>
+
+            <div id="nav-to-puzzle" class="nav-icon" title="Go to the Locked Door">
+                <!-- Door Icon SVG -->
+                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-2 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm4-8h-8V4h8v6z"></path></svg>
+            </div>
+        </div>
+
+        <!-- SCENE 2: THE PUZZLE DOOR -->
+        <div id="puzzle-scene" class="scene">
+            <div class="puzzle-layout">
+                <div class="door-area">
+                    <div id="locked-door-container" class="locked-door">
+                        <!-- The specific door SVG will be injected here -->
+                    </div>
+                    <div class="code-slots">
+                        <div class="slot" data-slot-index="0"></div>
+                        <div class="slot" data-slot-index="1"></div>
+                        <div class="slot" data-slot-index="2"></div>
+                        <div class="slot" data-slot-index="3"></div>
+                    </div>
+                </div>
+                <div class="symbol-area">
+                    <h2>Symbols of Power</h2>
+                    <p style="margin: 0; font-size: 0.9rem;">(Drag symbols to the slots below the door)</p>
+                    <div id="symbol-palette-container" class="symbol-palette">
+                        <!-- Symbol palette will be generated here -->
+                    </div>
+                    <div class="puzzle-controls">
+                        <button id="clear-btn" class="puzzle-btn">Clear</button>
+                        <button id="unlock-btn" class="puzzle-btn">Unlock</button>
+                        <button id="solve-puzzle-btn" class="puzzle-btn" style="background: #4CAF50; color: white;">Solve Puzzle (TEST)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Hint Element for Crystal Ball Nav -->
+            <div id="crystal-ball-nav-hint" class="nav-hint">
+                <span class="hint-text">Click here to return to the crystal ball</span>
+                <span class="hint-arrow">→</span>
+            </div>
+
+            <div id="nav-to-crystal-ball" class="nav-icon" title="Return to the Crystal Ball">
+                <!-- Crystal Ball Icon SVG -->
+                <svg viewBox="0 0 512 512"><path d="M256 128c-70.69 0-128 57.31-128 128s57.31 128 128 128 128-57.31 128-128-57.31-128-128-128zm0 224c-52.94 0-96-43.06-96-96s43.06-96 96-96 96 43.06 96 96-43.06 96-96 96zM256 32C132.3 32 32 132.3 32 256s100.3 224 224 224 224-100.3 224-224S379.7 32 256 32zm0 416c-105.87 0-192-86.13-192-192S150.13 64 256 64s192 86.13 192 192-86.13 192-192 192z"></path></svg>
+            </div>
+        </div>
+        
+        <!-- SCENE 3: THE FINAL NOTE -->
+        <div id="note-scene" class="scene">
+            <div class="note-paper">
+                <h2>A Secret Note for the Seeker!</h2>
+                <p>Congratulations, Lincoln! You have proven your wisdom and solved all the mysteries of the Birthday Quest. To recieve your gift, simply face your Father and speak these words cleary three times...</p>
+                <p><strong>...Wibbly-wobbly walruses weave wildly woolly wigs!</strong></p>
+                <p></p>
+            </div>
+             <div id="nav-to-crystal-ball-from-note" class="nav-icon" title="Return to the Crystal Ball">
+                <!-- Crystal Ball Icon SVG -->
+                <svg viewBox="0 0 512 512"><path d="M256 128c-70.69 0-128 57.31-128 128s57.31 128 128 128 128-57.31 128-128-57.31-128-128-128zm0 224c-52.94 0-96-43.06-96-96s43.06-96 96-96 96 43.06 96 96-43.06 96-96 96zM256 32C132.3 32 32 132.3 32 256s100.3 224 224 224 224-100.3 224-224S379.7 32 256 32zm0 416c-105.87 0-192-86.13-192-192S150.13 64 256 64s192 86.13 192 192-86.13 192-192 192z"></path></svg>
+            </div>
+        </div>
+
+        <!-- SCENE 4: DOOR UNLOCKED MESSAGE -->
+        <div id="door-unlocked-message-scene" class="scene">
+            <div id="door-unlocked-content" class="modal-content">
+                <p id="door-unlocked-text"></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL for messages -->
+    <div id="message-modal" class="modal">
+        <div id="modal-content" class="modal-content">
+            <p id="modal-text">Message</p>
+        </div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- GAME CONFIGURATION ---
+        // This is where you can easily change game data.
+        // Dean: You can change the audio paths here. I've used placeholder paths.
+        // You would need to create an 'audio' folder next to this HTML file and place your mp3s inside it.
+        // The SVGs are generated directly in the code, but you could replace them with image paths too.
+        
+        const puzzleData = [
+            // AI-generated codes: 3715, 8241, 6173, 4826, 1538, 7462, 2814, 5367, 8152, 3628
+            {
+                puzzleId: 1,
+                audioClueFile: 'audio/Clue1.mp3',
+                correctCode: '3715',
+                lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`,
+                symbolPalette: generateSymbols(0) // Generate 8 unique symbols for this puzzle
+            },
+            {
+                puzzleId: 2,
+                audioClueFile: 'audio/Clue2.mp3',
+                correctCode: '8241',
+                lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10"/><rect x="45" y="60" width="10" height="20" fill="#333"/><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`,
+                symbolPalette: generateSymbols(1)
+            },
+            {
+                puzzleId: 3,
+                audioClueFile: 'audio/Clue3.mp3',
+                correctCode: '6173',
+                lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><path d="M 20 20 L 80 120 M 80 20 L 20 120" stroke="#f7d716" stroke-width="4"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`,
+                symbolPalette: generateSymbols(2)
+            },
+            // ... Add all 10 puzzles
+            { puzzleId: 4, audioClueFile: 'audio/Clue4.mp3', correctCode: '4826', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10"/><rect x="20" y="20" width="60" height="100" stroke="#333" stroke-width="3" fill="none"/><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`, symbolPalette: generateSymbols(3) },
+            { puzzleId: 5, audioClueFile: 'audio/Clue5.mp3', correctCode: '1538', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><circle cx="50" cy="70" r="20" stroke="#f7d716" stroke-width="4" fill="none"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`, symbolPalette: generateSymbols(4) },
+            { puzzleId: 6, audioClueFile: 'audio/Clue6.mp3', correctCode: '7462', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10"/><path d="M 50 20 L 20 120 L 80 120 Z" stroke="#333" stroke-width="3" fill="#444"/><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`, symbolPalette: generateSymbols(5) },
+            { puzzleId: 7, audioClueFile: 'audio/Clue7.mp3', correctCode: '2814', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><line x1="20" y1="70" x2="80" y2="70" stroke="#f7d716" stroke-width="4"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`, symbolPalette: generateSymbols(6) },
+            { puzzleId: 8, audioClueFile: 'audio/Clue8.mp3', correctCode: '5367', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10"/><rect x="40" y="60" width="20" height="20" fill="#333"/><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`, symbolPalette: generateSymbols(7) },
+            { puzzleId: 9, audioClueFile: 'audio/Clue9.mp3', correctCode: '8152', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><path d="M20,120 C40,80 60,80 80,120" stroke="#f7d716" stroke-width="4" fill="none"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`, symbolPalette: generateSymbols(8) },
+            { puzzleId: 10, audioClueFile: 'audio/Clue10.mp3', correctCode: '3628', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10" /><circle cx="50" cy="30" r="10" fill="#333" /><circle cx="50" cy="110" r="10" fill="#333" /><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`, symbolPalette: generateSymbols(9) }
+        ];
+
+        const introAudioFile = 'audio/intro.mp3';
+        const unlockSoundFile = 'audio/unlock.mp3';
+        const errorSoundFile = 'audio/error.mp3';
+        const clickSoundFile = 'audio/click.mp3';
+
+        // --- GAME STATE ---
+        let currentPuzzleIndex = 0;
+        let lastPlayedAudio = null;
+        let userInputCode = [null, null, null, null];
+        let gameCompleted = false;
+        let audioBeforeInterruption = null;
+        let introFinished = false;
+
+        // --- AUDIO SYSTEM ---
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        const mainAudio = new Audio();
+        let audioSourceNode;
+        const glowElement = document.querySelector('.crystal-ball-glow');
+
+        function playAudio(url, onEndedCallback) {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            mainAudio.src = url;
+            lastPlayedAudio = url; // Store for replay
+            
+            if (!audioSourceNode) {
+                audioSourceNode = audioContext.createMediaElementSource(mainAudio);
+                audioSourceNode.connect(analyser);
+                analyser.connect(audioContext.destination);
+            }
+            
+            mainAudio.play().catch(e => console.error("Audio playback failed:", e));
+
+            mainAudio.onended = () => {
+                cancelAnimationFrame(animationFrameId);
+                glowElement.style.transform = 'translate(-50%, -50%) scale(1)';
+                glowElement.style.opacity = '0.7';
+                if (onEndedCallback) onEndedCallback();
+            };
+            
+            animateGlow();
+        }
+
+        let animationFrameId;
+        function animateGlow() {
+            animationFrameId = requestAnimationFrame(animateGlow);
+            analyser.getByteFrequencyData(dataArray);
+            
+            let sum = 0;
+            for(let i = 0; i < bufferLength; i++) {
+                sum += dataArray[i];
+            }
+            const average = sum / bufferLength;
+            // Normalize average based on observed typical max value (e.g., 60)
+            // Normalize average based on observed typical max value (e.g., 60)
+            // Adjusting the range to make oscillation more dramatic and impactful:
+            // Map average from [20, 60] to [0, 1] for more pronounced effect.
+            const normalizedAverage = Math.min(Math.max((average - 20) / 40, 0), 1); 
+            
+            const scale = 1 + normalizedAverage * 1.5; // Increased scale for more impact (from 1 to 2.5)
+            const opacity = 0.7 + normalizedAverage * 0.8; // Increased opacity range for more impact (from 0.7 to 1.5)
+            
+            glowElement.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            glowElement.style.opacity = `${opacity}`;
+        }
+        
+        function playSoundEffect(url) {
+            const sound = new Audio(url);
+            sound.play().catch(e => console.log("Sound effect couldn't play. User interaction needed."));
+        }
+
+        // --- DOM ELEMENTS ---
+        const scenes = {
+            crystalBall: document.getElementById('crystal-ball-scene'),
+            puzzle: document.getElementById('puzzle-scene'),
+            note: document.getElementById('note-scene'),
+            doorUnlockedMessage: document.getElementById('door-unlocked-message-scene')
+        };
+        const navToPuzzleBtn = document.getElementById('nav-to-puzzle');
+        const navToCrystalBallBtn = document.getElementById('nav-to-crystal-ball');
+        const navFromNoteBtn = document.getElementById('nav-to-crystal-ball-from-note');
+        const crystalBallActivator = document.getElementById('crystal-ball-activator');
+        const puzzleNavHint = document.getElementById('puzzle-nav-hint'); // New element reference
+        const crystalBallNavHint = document.getElementById('crystal-ball-nav-hint'); // New element reference
+        const doorContainer = document.getElementById('locked-door-container');
+        const symbolPaletteContainer = document.getElementById('symbol-palette-container');
+        const codeSlots = document.querySelectorAll('.slot');
+        const clearBtn = document.getElementById('clear-btn');
+        const unlockBtn = document.getElementById('unlock-btn');
+        const solvePuzzleBtn = document.getElementById('solve-puzzle-btn'); // New button
+        const modal = document.getElementById('message-modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalText = document.getElementById('modal-text');
+        const doorUnlockedMessageScene = document.getElementById('door-unlocked-message-scene');
+        const doorUnlockedText = document.getElementById('door-unlocked-text');
+
+        // --- SCENE MANAGEMENT ---
+        function showScene(sceneName) {
+            Object.values(scenes).forEach(s => s.classList.remove('active'));
+            scenes[sceneName].classList.add('active');
+        }
+
+        // --- PUZZLE LOGIC ---
+        function loadPuzzle(index) {
+            if (index >= puzzleData.length) {
+                completeGame();
+                return;
+            }
+            const puzzle = puzzleData[index];
+            doorContainer.innerHTML = puzzle.lockedItemSVG;
+            doorContainer.classList.remove('unlocked');
+            
+            // Populate symbol palette
+            symbolPaletteContainer.innerHTML = '';
+            puzzle.symbolPalette.forEach((symbol, i) => {
+                const symbolEl = document.createElement('div');
+                symbolEl.classList.add('symbol-icon');
+                symbolEl.draggable = true;
+                symbolEl.dataset.symbolId = i + 1; // 1-indexed for the code
+                symbolEl.innerHTML = symbol.svg;
+                symbolPaletteContainer.appendChild(symbolEl);
+            });
+            
+            clearSlots();
+            addDragListeners();
+        }
+
+        function clearSlots() {
+            userInputCode = [null, null, null, null];
+            codeSlots.forEach(slot => {
+                slot.innerHTML = '';
+            });
+            playSoundEffect(clickSoundFile);
+        }
+
+        function checkCode() {
+            const enteredCode = userInputCode.join('');
+            const correctCode = puzzleData[currentPuzzleIndex].correctCode;
+            
+            if (enteredCode === correctCode) {
+                // SUCCESS
+                playSoundEffect(unlockSoundFile);
+                doorContainer.classList.add('unlocked');
+                
+                setTimeout(() => {
+                    currentPuzzleIndex++;
+                    if (currentPuzzleIndex >= puzzleData.length) {
+                        completeGame();
+                    } else {
+                        // Show "Door unlocked!" message in the new scene
+                        doorUnlockedText.textContent = 'Door unlocked!';
+                        showScene('doorUnlockedMessage');
+
+                        // Add one-time listener for the next message
+                        const nextMessageListener = () => {
+                            doorUnlockedMessageScene.removeEventListener('click', nextMessageListener); // Remove self
+                            doorUnlockedText.textContent = 'You find another locked door...';
+                            // After a brief delay, transition to crystal ball and load next puzzle
+                            setTimeout(() => {
+                                showScene('crystalBall');
+                                loadPuzzle(currentPuzzleIndex);
+                                playAudio(puzzleData[currentPuzzleIndex].audioClueFile); // Play new clue audio
+                            }, 1000); // Delay before showing crystal ball
+                        };
+                        doorUnlockedMessageScene.addEventListener('click', nextMessageListener);
+                    }
+                }, 1000); // Wait for animation
+            } else {
+                // FAILURE
+                playSoundEffect(errorSoundFile);
+                showModal('The symbols are not aligned. Try again.', true);
+                document.querySelector('.puzzle-layout').animate([
+                    { transform: 'translateX(0px)' },
+                    { transform: 'translateX(-10px)' },
+                    { transform: 'translateX(10px)' },
+                    { transform: 'translateX(-10px)' },
+                    { transform: 'translateX(10px)' },
+                    { transform: 'translateX(0px)' }
+                ], { duration: 500, iterations: 1 });
+            }
+        }
+        
+        function completeGame() {
+            gameCompleted = true;
+            showModal('You have solved all the puzzles!', false);
+            // Update nav icon to point to the note instead of the puzzle
+            navToPuzzleBtn.onclick = () => showScene('note');
+            setTimeout(() => {
+                showScene('note');
+            }, 1500);
+        }
+
+        // --- DRAG AND DROP ---
+        let draggedSymbol = null;
+        
+        function addDragListeners() {
+            const symbols = document.querySelectorAll('.symbol-icon');
+            symbols.forEach(symbol => {
+                symbol.addEventListener('dragstart', handleDragStart);
+                symbol.addEventListener('dragend', handleDragEnd);
+            });
+
+            codeSlots.forEach(slot => {
+                slot.addEventListener('dragover', handleDragOver);
+                slot.addEventListener('dragleave', handleDragLeave);
+                slot.addEventListener('drop', handleDrop);
+            });
+        }
+        
+        function handleDragStart(e) {
+            draggedSymbol = e.target;
+            setTimeout(() => e.target.classList.add('dragging'), 0);
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.target.closest('.slot').classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.target.closest('.slot').classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const slot = e.target.closest('.slot');
+            slot.classList.remove('drag-over');
+            
+            if (draggedSymbol && slot) {
+                playSoundEffect(clickSoundFile);
+                const slotIndex = parseInt(slot.dataset.slotIndex);
+                // Clear previous symbol if any
+                slot.innerHTML = '';
+                // Clone the symbol to drop it in
+                const clonedSymbol = draggedSymbol.cloneNode(true);
+                clonedSymbol.classList.remove('dragging');
+                clonedSymbol.draggable = false;
+                slot.appendChild(clonedSymbol);
+                
+                // Store the code
+                userInputCode[slotIndex] = draggedSymbol.dataset.symbolId;
+            }
+        }
+
+        // --- UTILITY & INIT ---
+        function showModal(text, isError) {
+            modalText.textContent = text;
+            modalContent.classList.toggle('error', isError);
+            modal.classList.add('visible');
+        }
+        
+        function generateSymbols(seed) {
+            // Generates 8 deterministic "random" symbols for a puzzle
+            // This ensures each puzzle has a unique but consistent set of symbols
+            const symbolSVGs = [
+                // Set 1: Basic shapes
+                `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M 20 20 L 80 80 M 80 20 L 20 80" stroke="currentColor" stroke-width="8"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M50,10 L50,90 M10,50 L90,50" stroke="currentColor" stroke-width="8"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M20,80 Q50,10 80,80" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M50 10 V 90 L 90 50" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M15,15 h70 v70 h-70 z m15,15 h40 v40 h-40 z" stroke="currentColor" stroke-width="4" fill="currentColor"/></svg>`,
+                // Set 2: "Magical" shapes
+                `<svg viewBox="0 0 100 100"><path d="M50 2l11 22 24 4-18 18 4 24-22-11-22 11 4-24-18-18 24-4z" stroke="currentColor" stroke-width="4" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M25 75 A 40 40 0 0 1 75 25" stroke="currentColor" stroke-width="8" fill="none"/><circle cx="75" cy="25" r="10" fill="currentColor"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M10 50 C 40 10, 60 10, 90 50 S 60 90, 10 50" stroke="currentColor" stroke-width="6" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M50 10 L70 40 L95 40 L75 60 L85 90 L50 70 L15 90 L25 60 L5 40 L30 40 Z" fill="currentColor"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M50,90 C40,70 40,30 50,10 C60,30 60,70 50,90 Z" stroke="currentColor" stroke-width="6" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M20,20 L80,20 L50,80 Z" stroke="currentColor" stroke-width="8" fill="none"/><circle cx="50" cy="45" r="8" fill="currentColor"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M20,50 L50,20 L80,50 L50,80 Z" stroke="currentColor" stroke-width="8" fill="currentColor"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M50 20 C 80 20, 80 80, 50 80 C 20 80, 20 20, 50 20 M 50 30 C 70 30, 70 70, 50 70 C 30 70, 30 30, 50 30" stroke="currentColor" stroke-width="4" fill="none"/></svg>`,
+            ];
+
+            const result = [];
+            const startIndex = (seed * 3) % symbolSVGs.length; // Create variance
+            for (let i = 0; i < 8; i++) {
+                const index = (startIndex + i * 2) % symbolSVGs.length;
+                result.push({ id: `p${seed}_s${i+1}`, svg: symbolSVGs[index] });
+            }
+            return result;
+        }
+
+        function init() {
+            // Navigation listeners
+            navToPuzzleBtn.addEventListener('click', () => {
+                 if (gameCompleted) {
+                    showScene('note');
+                } else {
+                    showScene('puzzle');
+                }
+                // Hide the hint after the first click
+                if (puzzleNavHint) {
+                    puzzleNavHint.classList.add('hidden');
+                }
+            });
+            navToCrystalBallBtn.addEventListener('click', () => {
+                showScene('crystalBall');
+                // Hide the hint after the first click
+                if (crystalBallNavHint) {
+                    crystalBallNavHint.classList.add('hidden');
+                }
+            });
+            navFromNoteBtn.addEventListener('click', () => showScene('crystalBall'));
+
+            // Game action listeners
+            crystalBallActivator.addEventListener('click', () => {
+                if (!mainAudio.paused && mainAudio.currentTime > 0) { // Audio is currently playing
+                    mainAudio.pause();
+                    audioBeforeInterruption = lastPlayedAudio; // Store the current audio
+                    introFinished = false; // Set to false if any audio is interrupted
+                    // Play a random cough sound
+                    const randomCoughIndex = Math.floor(Math.random() * 5) + 1; // 1 to 5
+                    playAudio(`audio/cough${randomCoughIndex}.mp3`);
+                } else if (audioBeforeInterruption) { // Was interrupted, play the original audio
+                    const audioToPlay = audioBeforeInterruption;
+                    audioBeforeInterruption = null; // Reset after playing
+                    if (audioToPlay === introAudioFile) {
+                        playAudio(audioToPlay, () => { introFinished = true; lastPlayedAudio = puzzleData[0].audioClueFile; }); // Pass callback if replaying intro
+                    } else {
+                        playAudio(audioToPlay);
+                    }
+                } else if (!introFinished) { // If intro hasn't finished, force intro replay
+                    playAudio(introAudioFile, () => { introFinished = true; lastPlayedAudio = puzzleData[0].audioClueFile; }); // Pass callback if playing intro
+                } else { // Intro finished, no audio playing, or not interrupted, play last played audio (which should be a clue)
+                    // This handles the transition from intro to first clue after intro finishes
+                    if (lastPlayedAudio === introAudioFile) { // Intro just finished
+                        lastPlayedAudio = puzzleData[0].audioClueFile;
+                    }
+                    playAudio(lastPlayedAudio);
+                }
+            });
+            clearBtn.addEventListener('click', clearSlots);
+            unlockBtn.addEventListener('click', checkCode);
+            
+            // Solve Puzzle Button Logic
+            solvePuzzleBtn.addEventListener('click', () => {
+                const currentPuzzle = puzzleData[currentPuzzleIndex];
+                const correctCode = currentPuzzle.correctCode;
+                const symbolPalette = currentPuzzle.symbolPalette;
+
+                clearSlots(); // Clear existing symbols
+
+                for (let i = 0; i < correctCode.length; i++) {
+                    const digit = correctCode[i];
+                    const symbolId = parseInt(digit); // Assuming symbolId matches the digit
+                    
+                    // Find the symbol SVG from the current puzzle's palette
+                    const symbol = symbolPalette.find(s => s.id.endsWith(`s${symbolId}`));
+                    
+                    if (symbol) {
+                        const slot = codeSlots[i];
+                        slot.innerHTML = ''; // Clear slot
+                        const symbolEl = document.createElement('div');
+                        symbolEl.classList.add('symbol-icon');
+                        symbolEl.draggable = false; // Not draggable when auto-filled
+                        symbolEl.dataset.symbolId = symbolId;
+                        symbolEl.innerHTML = symbol.svg;
+                        slot.appendChild(symbolEl);
+                        userInputCode[i] = String(symbolId); // Update userInputCode
+                    }
+                }
+                playSoundEffect(clickSoundFile);
+                checkCode(); // Trigger the check
+            });
+
+            // Initial Setup
+            showModal('Welcome, young Lincoln! Click the crystal ball to begin your quest.', false);
+            loadPuzzle(0);
+
+            // Hide modal on click/touch
+            modal.addEventListener('click', () => {
+                modal.classList.remove('visible');
+                // Play intro audio when modal is dismissed
+                playAudio(introAudioFile, () => {
+                    // After intro finishes, set introFinished to true and lastPlayedAudio to the first clue
+                    introFinished = true;
+                    lastPlayedAudio = puzzleData[0].audioClueFile;
+                });
+            });
+        }
+
+        init();
+    });
+    </script>
+</body>
+</html>

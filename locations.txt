@@ -1,0 +1,48 @@
+Dog with pumpkins and a witches hat in the month of Halloween
+
+Behind an ancient Japanese shrine in the snow 
+
+On the back of a robot near the on off switch
+
+Under the place where a boy keeps his books to read beside the toilet
+
+Under the sandpit in Maisie's house
+
+Behind the mirror where dad checks the pipes. 
+
+Inside a small pumpkin with a smile
+
+Under the bird house
+
+On the red dragon in Dragon Wood
+
+Under the golden buddah
+
+
+
+Script:
+
+"Greetings, young quest-seeker! Today, on your special birthday, a grand challenge awaits! Touch this Crystal Ball to hear the first riddle, which will guide you through the ten magical doors standing between you and your birthday prize! Are you ready?"
+
+[cough]
+
+"hmm?"
+
+"oh..."
+
+"pardon"
+
+"uh"
+
+
+"First you must seek a dog wearing a witches hat, surrounded by pumpkins, in the spooky month of Halloween."
+"Find the secret behind an ancient Japanese shrine, nestled amidst the snow, on a door to the cold."
+"Upon the mighty robot's back, near the very spark of its life – the on off switch."
+"Discover the hidden truth under the place where a boy keeps his books to read, close by the quiet contemplation of the ceramic throne."
+"Uncover the mystery under the sandpit in Maisie's house, where grains of magic reside."
+"Gaze behind the mirror where the Father checks the pipes, revealing reflections of hidden paths."
+"Journey inside a small pumpkin with a smile, for it holds a joyful secret."
+"Find the treasure under the bird house, beneath the dwelling of winged wonders."
+"Seek the red dragon in Dragon Wood, for the code lies on its majestic form."
+"Unearth the wisdom under the golden buddha, a beacon of serene truth."
+
