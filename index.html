@@ -429,8 +429,6 @@
                     <div class="puzzle-controls">
                         <button id="clear-btn" class="puzzle-btn">Clear</button>
                         <button id="unlock-btn" class="puzzle-btn">Unlock</button>
-                        <button id="solve-puzzle-btn" class="puzzle-btn" style="background: #4CAF50; color: white;">Solve Puzzle 
-                        (TEST)</button>
                     </div>
                 </div>
             </div>
@@ -613,7 +611,6 @@
         const codeSlots = document.querySelectorAll('.slot');
         const clearBtn = document.getElementById('clear-btn');
         const unlockBtn = document.getElementById('unlock-btn');
-        const solvePuzzleBtn = document.getElementById('solve-puzzle-btn'); // New button
         const modal = document.getElementById('message-modal');
         const modalContent = document.getElementById('modal-content');
         const modalText = document.getElementById('modal-text');
@@ -863,37 +860,6 @@
             });
             clearBtn.addEventListener('click', clearSlots);
             unlockBtn.addEventListener('click', checkCode);
-            
-            // Solve Puzzle Button Logic
-            solvePuzzleBtn.addEventListener('click', () => {
-                const currentPuzzle = puzzleData[currentPuzzleIndex];
-                const correctCode = currentPuzzle.correctCode;
-                const symbolPalette = currentPuzzle.symbolPalette;
-
-                clearSlots(); // Clear existing symbols
-
-                for (let i = 0; i < correctCode.length; i++) {
-                    const digit = correctCode[i];
-                    const symbolId = parseInt(digit); // Assuming symbolId matches the digit
-                    
-                    // Find the symbol SVG from the current puzzle's palette
-                    const symbol = symbolPalette.find(s => s.id.endsWith(`s${symbolId}`));
-                    
-                    if (symbol) {
-                        const slot = codeSlots[i];
-                        slot.innerHTML = ''; // Clear slot
-                        const symbolEl = document.createElement('div');
-                        symbolEl.classList.add('symbol-icon');
-                        symbolEl.draggable = false; // Not draggable when auto-filled
-                        symbolEl.dataset.symbolId = symbolId;
-                        symbolEl.innerHTML = symbol.svg;
-                        slot.appendChild(symbolEl);
-                        userInputCode[i] = String(symbolId); // Update userInputCode
-                    }
-                }
-                playSoundEffect(clickSoundFile);
-                checkCode(); // Trigger the check
-            });
 
             // Initial Setup
             showModal('Welcome, young Lincoln! Click the crystal ball to begin your quest.', false);
