@@ -188,33 +188,52 @@
         }
         
         /* Puzzle Scene */
+        #puzzle-scene {
+            padding: 20px; /* Add some padding to the scene itself */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+        }
+
         .puzzle-layout {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-items: flex-start;
-            gap: 40px;
-            padding: 20px;
-            max-width: 1000px;
+            align-items: center; /* Changed to center for better vertical alignment on smaller screens */
+            gap: 4vw; /* Use viewport width for gap */
+            padding: 2vw; /* Use viewport width for padding */
+            max-width: 1200px; /* Increased max-width for larger screens */
+            width: 95%; /* Make it take up more width on smaller screens */
+            margin: auto; /* Center the layout */
+            height: 100%; /* Allow it to take full height */
+            box-sizing: border-box;
         }
 
         .door-area, .symbol-area {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 2vw; /* Use viewport width for gap */
+            flex-shrink: 0; /* Prevent shrinking */
+            flex-grow: 1; /* Allow growing */
+            min-width: 280px; /* Minimum width for areas */
+            max-width: 450px; /* Maximum width for areas */
         }
 
         .locked-door {
-            width: 250px;
-            height: 350px;
+            width: 25vw; /* Use viewport width */
+            height: 35vw; /* Use viewport width */
+            max-width: 250px; /* Max size for desktop */
+            max-height: 350px; /* Max size for desktop */
+            min-width: 150px; /* Min size for mobile */
+            min-height: 210px; /* Min size for mobile */
             background-color: var(--door-color);
-            border: 10px solid var(--door-frame);
-            border-radius: 10px 10px 0 0;
+            border: 1vw solid var(--door-frame); /* Responsive border */
+            max-border-width: 10px; /* Max border size */
+            border-radius: 1vw 1vw 0 0; /* Responsive border radius */
             display: flex;
             justify-content: center;
             align-items: center;
             transition: transform 0.5s ease-in-out;
+            box-sizing: border-box;
         }
 
         .locked-door.unlocked {
@@ -223,19 +242,27 @@
 
         .code-slots {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 1vw; /* Responsive gap */
+            margin-top: 2vw; /* Responsive margin */
+            flex-wrap: wrap; /* Allow slots to wrap on smaller screens */
+            justify-content: center;
         }
 
         .slot {
-            width: 60px;
-            height: 60px;
+            width: 6vw; /* Responsive width */
+            height: 6vw; /* Responsive height */
+            max-width: 60px; /* Max size for desktop */
+            max-height: 60px; /* Max size for desktop */
+            min-width: 40px; /* Min size for mobile */
+            min-height: 40px; /* Min size for mobile */
             background: var(--secondary-bg);
-            border: 2px dashed var(--accent-purple);
-            border-radius: 10px;
+            border: 0.2vw dashed var(--accent-purple); /* Responsive border */
+            max-border-width: 2px; /* Max border size */
+            border-radius: 1vw; /* Responsive border radius */
             display: flex;
             justify-content: center;
             align-items: center;
+            box-sizing: border-box;
         }
         
         .slot.drag-over {
@@ -250,28 +277,36 @@
         .symbol-area h2 {
             margin-bottom: 0;
             color: var(--accent-gold);
+            font-size: clamp(1.5rem, 3vw, 2.5rem); /* Responsive font size */
         }
 
         .symbol-palette {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(4, 1fr); /* Default for larger screens */
+            gap: 1.5vw; /* Responsive gap */
             background: var(--primary-bg);
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid var(--accent-gold);
+            padding: 1.5vw; /* Responsive padding */
+            border-radius: 1vw; /* Responsive border radius */
+            border: 0.2vw solid var(--accent-gold); /* Responsive border */
+            max-width: 400px; /* Limit palette width on larger screens */
+            box-sizing: border-box;
         }
 
         .symbol-icon {
-            width: 60px;
-            height: 60px;
+            width: 6vw; /* Responsive width */
+            height: 6vw; /* Responsive height */
+            max-width: 60px; /* Max size for desktop */
+            max-height: 60px; /* Max size for desktop */
+            min-width: 40px; /* Min size for mobile */
+            min-height: 40px; /* Min size for mobile */
             background: var(--symbol-bg);
-            border-radius: 10px;
+            border-radius: 1vw; /* Responsive border radius */
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: grab;
             transition: all 0.2s;
+            box-sizing: border-box;
         }
 
         .symbol-icon:hover {
@@ -292,20 +327,23 @@
 
         .puzzle-controls {
             display: flex;
-            gap: 15px;
-            margin-top: 15px;
+            gap: 1.5vw; /* Responsive gap */
+            margin-top: 1.5vw; /* Responsive margin */
+            flex-wrap: wrap; /* Allow buttons to wrap */
+            justify-content: center;
         }
 
         .puzzle-btn {
-            padding: 12px 25px;
+            padding: 1.2vw 2.5vw; /* Responsive padding */
             font-family: 'MedievalSharp', cursive;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2vw, 1.2rem); /* Responsive font size */
             background: var(--accent-gold);
             color: var(--primary-bg);
             border: none;
-            border-radius: 8px;
+            border-radius: 0.8vw; /* Responsive border radius */
             cursor: pointer;
             transition: all 0.3s;
+            min-width: 80px; /* Minimum width for buttons */
         }
 
         .puzzle-btn:hover {
@@ -318,9 +356,274 @@
             background: #888;
             color: #fff;
         }
-         #clear-btn:hover {
+        #clear-btn:hover {
             background: #666;
          }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .puzzle-layout {
+                flex-direction: column;
+                gap: 30px;
+                padding: 15px;
+            }
+
+            .door-area, .symbol-area {
+                min-width: unset;
+                max-width: 90%;
+                width: 100%;
+            }
+
+            .locked-door {
+                width: 50vw;
+                height: 70vw;
+                max-width: 300px;
+                max-height: 420px;
+            }
+
+            .code-slots {
+                gap: 2vw;
+                margin-top: 3vw;
+            }
+
+            .slot {
+                width: 10vw;
+                height: 10vw;
+                max-width: 70px;
+                max-height: 70px;
+            }
+
+            .symbol-palette {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2vw;
+                padding: 2vw;
+                max-width: 300px;
+            }
+
+            .symbol-icon {
+                width: 10vw;
+                height: 10vw;
+                max-width: 70px;
+                max-height: 70px;
+            }
+
+            .puzzle-controls {
+                gap: 2vw;
+                margin-top: 2vw;
+                justify-content: center; /* Center buttons */
+            }
+
+            .puzzle-btn {
+                padding: 1.5vw 3vw;
+                font-size: clamp(1rem, 2.5vw, 1.5rem);
+            }
+
+            .nav-icon {
+                width: 50px;
+                height: 50px;
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .nav-icon svg {
+                width: 30px;
+                height: 30px;
+            }
+
+            .nav-hint {
+                bottom: 25px;
+                right: 75px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) { /* Even smaller screens (phones portrait) */
+            .puzzle-layout {
+                gap: 15px; /* Reduced gap */
+                padding: 5px; /* Reduced padding */
+            }
+
+            .locked-door {
+                width: 44vw; /* 20% smaller */
+                height: 61.6vw; /* 20% smaller */
+                max-width: 160px; /* Adjusted max size */
+                max-height: 224px; /* Adjusted max size */
+            }
+
+            .code-slots {
+                gap: 1vw; /* Reduced gap */
+            }
+
+            .slot {
+                width: 12vw; /* Slightly smaller slots */
+                height: 12vw;
+                max-width: 50px;
+                max-height: 50px;
+            }
+
+            .symbol-palette {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 3vw; /* Reduced gap */
+                padding: 3vw; /* Reduced padding */
+                max-width: 180px; /* Further reduced max-width */
+            }
+
+            .symbol-icon {
+                width: 12vw; /* Slightly smaller symbols */
+                height: 12vw;
+                max-width: 50px;
+                max-height: 50px;
+            }
+
+            .puzzle-btn {
+                padding: 2vw 4vw; /* Adjusted padding */
+                font-size: clamp(0.8rem, 3vw, 1.1rem); /* Adjusted font size */
+            }
+
+            .symbol-area p {
+                font-size: 0.6rem !important; /* Even smaller instruction text */
+            }
+
+            .symbol-area h2 {
+                font-size: clamp(1.1rem, 3.5vw, 1.8rem); /* Adjusted title size */
+            }
+
+            .nav-icon {
+                width: 40px; /* Smaller nav icon */
+                height: 40px;
+                bottom: 8px; /* Adjusted position */
+                right: 8px;
+            }
+
+            .nav-icon svg {
+                width: 22px; /* Smaller nav icon SVG */
+                height: 22px;
+            }
+
+            .nav-hint {
+                bottom: 15px; /* Adjusted position */
+                right: 55px; /* Adjusted position */
+                font-size: 0.8rem; /* Smaller hint text */
+            }
+        }
+
+        @media (max-width: 375px) { /* Very small phones (e.g., iPhone SE) */
+            .puzzle-layout {
+                gap: 10px; /* Further reduced gap */
+                padding: 5px;
+            }
+
+            .locked-door {
+                width: 48vw; /* 20% smaller */
+                height: 67.2vw; /* 20% smaller */
+                max-width: 144px; /* Adjusted max size */
+                max-height: 201.6px; /* Adjusted max size */
+            }
+
+            .code-slots {
+                gap: 0.8vw;
+            }
+
+            .slot {
+                width: 13vw;
+                height: 13vw;
+                max-width: 45px;
+                max-height: 45px;
+            }
+
+            .symbol-palette {
+                gap: 2.5vw;
+                padding: 2.5vw;
+                max-width: 160px; /* Further reduced max-width */
+            }
+
+            .symbol-icon {
+                width: 13vw;
+                height: 13vw;
+                max-width: 45px;
+                max-height: 45px;
+            }
+
+            .puzzle-btn {
+                padding: 1.8vw 3.5vw;
+                font-size: clamp(0.75rem, 2.8vw, 1rem);
+            }
+
+            .symbol-area p {
+                font-size: 0.6rem !important;
+            }
+
+            .symbol-area h2 {
+                font-size: clamp(1rem, 3vw, 1.6rem);
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) { /* Landscape mode for small height devices */
+            .puzzle-layout {
+                flex-direction: row;
+                gap: 1.5vw; /* Reduced gap for landscape */
+                padding: 0.8vw; /* Reduced padding */
+                align-items: center;
+            }
+
+            .door-area, .symbol-area {
+                max-width: 40vw; /* Adjusted max width for landscape */
+                min-width: unset;
+                width: auto;
+            }
+
+            .locked-door {
+                width: 18vw; /* Smaller door in landscape */
+                height: 25.2vw;
+                max-width: 180px;
+                max-height: 252px;
+            }
+
+            .code-slots {
+                gap: 0.6vw; /* Reduced gap */
+                margin-top: 0.8vw;
+            }
+
+            .slot {
+                width: 3.5vw; /* Smaller slots */
+                height: 3.5vw;
+                max-width: 35px;
+                max-height: 35px;
+            }
+
+            .symbol-palette {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 0.8vw; /* Reduced gap */
+                padding: 0.8vw;
+                max-width: 250px; /* Adjusted max-width */
+            }
+
+            .symbol-icon {
+                width: 3.5vw; /* Smaller symbols */
+                height: 3.5vw;
+                max-width: 35px;
+                max-height: 35px;
+            }
+
+            .puzzle-controls {
+                gap: 0.8vw;
+                margin-top: 0.8vw;
+            }
+
+            .puzzle-btn {
+                padding: 0.8vw 1.8vw; /* Adjusted padding */
+                font-size: clamp(0.7rem, 1.2vw, 0.9rem); /* Adjusted font size */
+            }
+
+            .symbol-area h2 {
+                font-size: clamp(1rem, 2vw, 1.8rem); /* Adjusted title size */
+            }
+        }
+
+        /* Note Scene */
+        #note-scene {
+            background: rgba(0,0,0,0.5);
+        }
 
         /* Note Scene */
         #note-scene {
