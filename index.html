@@ -327,6 +327,7 @@
             justify-content: center;
             align-items: center;
             box-sizing: border-box;
+            touch-action: none; /* Prevent default touch actions like scrolling */
         }
         
         .slot.drag-over {
@@ -371,6 +372,7 @@
             cursor: grab;
             transition: all 0.2s;
             box-sizing: border-box;
+            touch-action: none; /* Prevent default touch actions like scrolling */
         }
 
         .symbol-icon:hover {
@@ -380,6 +382,11 @@
         
         .symbol-icon.dragging {
             opacity: 0.5;
+        }
+
+        .symbol-icon.selected {
+            box-shadow: 0 0 15px 5px var(--glow-color); /* Visual feedback for selected state */
+            transform: scale(1.05);
         }
 
         .symbol-icon svg {
@@ -1092,35 +1099,50 @@
             }, 1500);
         }
 
-        // --- DRAG AND DROP ---
+        // --- DRAG AND DROP / TAP TO PLACE ---
         let draggedSymbol = null;
         let ghostSymbol = null; // For touch events
+        let selectedSymbol = null; // For tap-to-place functionality
 
         function addDragListeners() {
             const symbols = document.querySelectorAll('.symbol-icon');
             symbols.forEach(symbol => {
-                // Mouse events
+                // Mouse events for drag and drop
                 symbol.addEventListener('dragstart', handleDragStart);
                 symbol.addEventListener('dragend', handleDragEnd);
 
-                // Touch events
+                // Touch events for drag and drop
                 symbol.addEventListener('touchstart', handleTouchStart);
                 symbol.addEventListener('touchend', handleTouchEnd);
+
+                // Click/Tap event for tap-to-place
+                symbol.addEventListener('click', handleSymbolTap);
             });
 
             codeSlots.forEach(slot => {
-                // Mouse events
+                // Mouse events for drag and drop
                 slot.addEventListener('dragover', handleDragOver);
                 slot.addEventListener('dragleave', handleDragLeave);
                 slot.addEventListener('drop', handleDrop);
 
-                // Touch events
+                // Touch events for drag and drop
                 slot.addEventListener('touchmove', handleTouchMove);
+
+                // Click/Tap event for tap-to-place
+                slot.addEventListener('click', handleSlotTap);
             });
+
+            // Listen for clicks outside symbols/slots to deselect
+            document.addEventListener('click', handleOutsideClick);
         }
         
         // --- Mouse Drag Handlers ---
         function handleDragStart(e) {
+            // If a symbol is selected for tap-to-place, deselect it when starting a drag
+            if (selectedSymbol) {
+                selectedSymbol.classList.remove('selected');
+                selectedSymbol = null;
+            }
             draggedSymbol = e.target;
             setTimeout(() => e.target.classList.add('dragging'), 0);
         }
@@ -1153,27 +1175,34 @@
         let currentTouchX, currentTouchY;
 
         function handleTouchStart(e) {
-            e.preventDefault(); // Prevent scrolling and default touch behavior
-            draggedSymbol = e.target;
-            draggedSymbol.classList.add('dragging');
+            // If a symbol is selected for tap-to-place, deselect it when starting a drag
+            if (selectedSymbol) {
+                selectedSymbol.classList.remove('selected');
+                selectedSymbol = null;
+            }
+            // Only proceed with drag if it's a single touch (to avoid interfering with tap)
+            if (e.touches.length === 1) {
+                draggedSymbol = e.target;
+                draggedSymbol.classList.add('dragging');
 
-            // Create a ghost element for visual feedback
-            ghostSymbol = draggedSymbol.cloneNode(true);
-            ghostSymbol.classList.add('dragging'); // Keep the dragging style
-            ghostSymbol.style.position = 'absolute';
-            ghostSymbol.style.zIndex = '1000';
-            ghostSymbol.style.pointerEvents = 'none'; // Ensure it doesn't interfere with touch events
-            ghostSymbol.style.width = draggedSymbol.offsetWidth + 'px';
-            ghostSymbol.style.height = draggedSymbol.offsetHeight + 'px';
-            document.body.appendChild(ghostSymbol);
+                // Create a ghost element for visual feedback
+                ghostSymbol = draggedSymbol.cloneNode(true);
+                ghostSymbol.classList.add('dragging'); // Keep the dragging style
+                ghostSymbol.style.position = 'absolute';
+                ghostSymbol.style.zIndex = '1000';
+                ghostSymbol.style.pointerEvents = 'none'; // Ensure it doesn't interfere with touch events
+                ghostSymbol.style.width = draggedSymbol.offsetWidth + 'px';
+                ghostSymbol.style.height = draggedSymbol.offsetHeight + 'px';
+                document.body.appendChild(ghostSymbol);
 
-            // Initial position update
-            currentTouchX = e.touches[0].clientX;
-            currentTouchY = e.touches[0].clientY;
-            requestAnimationFrame(renderGhostPosition);
+                // Initial position update
+                currentTouchX = e.touches[0].clientX;
+                currentTouchY = e.touches[0].clientY;
+                requestAnimationFrame(renderGhostPosition);
 
-            // Add global touchmove listener to track finger movement
-            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+                // Add global touchmove listener to track finger movement
+                document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            }
         }
 
         function handleTouchMove(e) {
@@ -1206,25 +1235,71 @@
         }
 
         function handleTouchEnd(e) {
-            draggedSymbol.classList.remove('dragging');
-            document.removeEventListener('touchmove', handleTouchMove);
-            cancelAnimationFrame(touchRAF); // Cancel any pending animation frame
-            touchRAF = null;
+            if (draggedSymbol) { // Only if a drag was actually initiated
+                draggedSymbol.classList.remove('dragging');
+                document.removeEventListener('touchmove', handleTouchMove);
+                cancelAnimationFrame(touchRAF); // Cancel any pending animation frame
+                touchRAF = null;
 
-            if (ghostSymbol) {
-                ghostSymbol.remove();
-                ghostSymbol = null;
+                if (ghostSymbol) {
+                    ghostSymbol.remove();
+                    ghostSymbol = null;
+                }
+
+                const touch = e.changedTouches[0];
+                const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+                const slot = targetElement ? targetElement.closest('.slot') : null;
+
+                if (slot) {
+                    slot.classList.remove('drag-over');
+                    placeSymbolInSlot(draggedSymbol, slot);
+                }
+                draggedSymbol = null; // Reset dragged symbol
             }
+        }
 
-            const touch = e.changedTouches[0];
-            const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
-            const slot = targetElement ? targetElement.closest('.slot') : null;
+        // --- Tap-to-Place Handlers ---
+        function handleSymbolTap(e) {
+            const tappedSymbol = e.currentTarget; // Use currentTarget as event listener is on the symbol itself
 
-            if (slot) {
-                slot.classList.remove('drag-over');
-                placeSymbolInSlot(draggedSymbol, slot);
+            if (selectedSymbol === tappedSymbol) {
+                // If the same symbol is tapped again, deselect it
+                selectedSymbol.classList.remove('selected');
+                selectedSymbol = null;
+            } else {
+                // Deselect any previously selected symbol
+                if (selectedSymbol) {
+                    selectedSymbol.classList.remove('selected');
+                }
+                // Select the new symbol
+                selectedSymbol = tappedSymbol;
+                selectedSymbol.classList.add('selected');
             }
-            draggedSymbol = null; // Reset dragged symbol
+            playSoundEffect(clickSoundFile);
+        }
+
+        function handleSlotTap(e) {
+            const tappedSlot = e.currentTarget; // Use currentTarget as event listener is on the slot itself
+
+            if (selectedSymbol) {
+                // If a symbol is selected, place it in this slot
+                placeSymbolInSlot(selectedSymbol, tappedSlot);
+                selectedSymbol.classList.remove('selected');
+                selectedSymbol = null; // Deselect after placing
+            }
+            playSoundEffect(clickSoundFile);
+        }
+
+        function handleOutsideClick(e) {
+            // If click is outside a symbol-icon or slot, deselect current symbol
+            const isSymbol = e.target.closest('.symbol-icon');
+            const isSlot = e.target.closest('.slot');
+            const isClearBtn = e.target.id === 'clear-btn'; // Check if clear button was clicked
+
+            if (selectedSymbol && !isSymbol && !isSlot && !isClearBtn) {
+                selectedSymbol.classList.remove('selected');
+                selectedSymbol = null;
+            }
         }
 
         function placeSymbolInSlot(symbol, slot) {
@@ -1235,6 +1310,7 @@
             // Clone the symbol to drop it in
             const clonedSymbol = symbol.cloneNode(true);
             clonedSymbol.classList.remove('dragging');
+            clonedSymbol.classList.remove('selected'); // Remove selected class from the cloned symbol
             clonedSymbol.draggable = false; // Not draggable once placed
             slot.appendChild(clonedSymbol);
             
