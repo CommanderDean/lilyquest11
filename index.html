@@ -65,6 +65,70 @@
             opacity: 1;
             transition: opacity 0.5s linear;
         }
+
+        /* Password Screen Specific Styles */
+        #password-screen {
+            background: var(--primary-bg);
+            color: var(--light-text);
+            font-family: 'MedievalSharp', cursive;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            z-index: 1001; /* Ensure it's on top */
+        }
+
+        #password-screen h1 {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            text-shadow: 0 0 15px var(--accent-gold);
+            margin-bottom: 30px;
+        }
+
+        #password-input {
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            border: 2px solid var(--accent-purple);
+            border-radius: 8px;
+            background: var(--secondary-bg);
+            color: var(--light-text);
+            text-align: center;
+            outline: none;
+            width: 250px;
+            max-width: 80%;
+        }
+
+        #password-input::placeholder {
+            color: rgba(224, 224, 224, 0.7);
+        }
+
+        #password-submit {
+            padding: 15px 30px;
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1.8rem;
+            background: var(--accent-gold);
+            color: var(--primary-bg);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        #password-submit:hover {
+            background: var(--accent-purple);
+            color: var(--light-text);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        #password-error {
+            font-size: 1.2rem;
+            color: #e57373; /* A soft red for errors */
+            margin-top: 10px;
+            height: 1.2em; /* Reserve space to prevent layout shift */
+        }
         
         /* Navigation Icons */
         .nav-icon {
@@ -686,6 +750,12 @@
     </style>
 </head>
 <body>
+    <div id="password-screen" class="scene active">
+        <h1>Enter Password</h1>
+        <input type="password" id="password-input" placeholder="Password">
+        <button id="password-submit">Enter</button>
+        <p id="password-error" style="color: red;"></p>
+    </div>
 
     <div class="game-container">
         <!-- SCENE 1: THE CRYSTAL BALL -->
@@ -897,7 +967,13 @@
         }
 
         // --- DOM ELEMENTS ---
+        const passwordScreen = document.getElementById('password-screen');
+        const passwordInput = document.getElementById('password-input');
+        const passwordSubmit = document.getElementById('password-submit');
+        const passwordError = document.getElementById('password-error');
+
         const scenes = {
+            passwordScreen: passwordScreen,
             crystalBall: document.getElementById('crystal-ball-scene'),
             puzzle: document.getElementById('puzzle-scene'),
             note: document.getElementById('note-scene'),
@@ -1207,6 +1283,26 @@
         }
 
         function init() {
+            // Initial scene is the password screen
+            showScene('passwordScreen');
+
+            // Password screen logic
+            passwordSubmit.addEventListener('click', () => {
+                const enteredPassword = passwordInput.value.trim().toLowerCase();
+                const correctPassword = 'eight'; // The password is "eight"
+
+                if (enteredPassword === correctPassword) {
+                    passwordError.textContent = ''; // Clear any previous error
+                    showScene('crystalBall'); // Show the main game scene
+                    // Proceed with the original game initialization
+                    showModal('Happy birthday Lincoln! This is your birthday quest.', false);
+                    loadPuzzle(0);
+                } else {
+                    passwordError.textContent = 'Incorrect password. Try again.';
+                    passwordInput.value = ''; // Clear input
+                }
+            });
+
             // Navigation listeners
             navToPuzzleBtn.addEventListener('click', () => {
                  if (gameCompleted) {
@@ -1258,11 +1354,7 @@
             clearBtn.addEventListener('click', clearSlots);
             unlockBtn.addEventListener('click', checkCode);
 
-            // Initial Setup
-            showModal('Happy birthday Lincoln! This is your birthday quest.', false);
-            loadPuzzle(0);
-
-            // Hide modal on click/touch
+            // Hide modal on click/touch (This listener should only be active AFTER password is correct)
             modal.addEventListener('click', () => {
                 modal.classList.remove('visible');
                 // Play intro audio when modal is dismissed
