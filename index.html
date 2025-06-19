@@ -1073,6 +1073,9 @@
         }
 
         // --- Touch Drag Handlers ---
+        let touchRAF;
+        let currentTouchX, currentTouchY;
+
         function handleTouchStart(e) {
             e.preventDefault(); // Prevent scrolling and default touch behavior
             draggedSymbol = e.target;
@@ -1088,8 +1091,10 @@
             ghostSymbol.style.height = draggedSymbol.offsetHeight + 'px';
             document.body.appendChild(ghostSymbol);
 
-            // Position the ghost symbol at the touch location
-            updateGhostPosition(e.touches[0].clientX, e.touches[0].clientY);
+            // Initial position update
+            currentTouchX = e.touches[0].clientX;
+            currentTouchY = e.touches[0].clientY;
+            requestAnimationFrame(renderGhostPosition);
 
             // Add global touchmove listener to track finger movement
             document.addEventListener('touchmove', handleTouchMove, { passive: false });
@@ -1098,9 +1103,14 @@
         function handleTouchMove(e) {
             e.preventDefault(); // Prevent scrolling while dragging
             const touch = e.touches[0];
-            updateGhostPosition(touch.clientX, touch.clientY);
+            currentTouchX = touch.clientX;
+            currentTouchY = touch.clientY;
 
-            // Check for slot hover (drag-over effect)
+            if (!touchRAF) { // Only request a new frame if one isn't already pending
+                touchRAF = requestAnimationFrame(renderGhostPosition);
+            }
+
+            // Check for slot hover (drag-over effect) - this can be done directly as it's not visual position update
             const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
             codeSlots.forEach(slot => {
                 if (slot.contains(targetElement) && !slot.classList.contains('drag-over')) {
@@ -1111,9 +1121,19 @@
             });
         }
 
+        function renderGhostPosition() {
+            if (ghostSymbol) {
+                ghostSymbol.style.left = currentTouchX - ghostSymbol.offsetWidth / 2 + 'px';
+                ghostSymbol.style.top = currentTouchY - ghostSymbol.offsetHeight / 2 + 'px';
+            }
+            touchRAF = null; // Clear the pending frame request
+        }
+
         function handleTouchEnd(e) {
             draggedSymbol.classList.remove('dragging');
             document.removeEventListener('touchmove', handleTouchMove);
+            cancelAnimationFrame(touchRAF); // Cancel any pending animation frame
+            touchRAF = null;
 
             if (ghostSymbol) {
                 ghostSymbol.remove();
@@ -1129,13 +1149,6 @@
                 placeSymbolInSlot(draggedSymbol, slot);
             }
             draggedSymbol = null; // Reset dragged symbol
-        }
-
-        function updateGhostPosition(x, y) {
-            if (ghostSymbol) {
-                ghostSymbol.style.left = x - ghostSymbol.offsetWidth / 2 + 'px';
-                ghostSymbol.style.top = y - ghostSymbol.offsetHeight / 2 + 'px';
-            }
         }
 
         function placeSymbolInSlot(symbol, slot) {
