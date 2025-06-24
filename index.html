@@ -961,9 +961,13 @@
             // Map average from [20, 60] to [0, 1] for more pronounced effect.
             const normalizedAverage = Math.min(Math.max((average - 20) / 40, 0), 1); 
             
-            const scale = 1.5 + normalizedAverage * 0; // 
-            const opacity = 0.4 + normalizedAverage * 0.4; // Increased opacity range for more impact (from 0.4 to 0.8)
-            
+            const scale = 1.5 + normalizedAverage * 0; //
+            let opacity = 0.4 + normalizedAverage * 0.4; // Increased opacity range for more impact (from 0.4 to 0.8)
+
+            if (mainAudio.paused) {
+                opacity = 0;
+            }
+
             glowElement.style.transform = `translate(-50%, -50%) scale(${scale})`;
             glowElement.style.opacity = `${opacity}`;
         }
