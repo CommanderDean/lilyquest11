@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Symbols List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .puzzle-section {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+        .puzzle-section h2 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .symbol-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .symbol-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #e9e9e9;
+            width: 100px;
+            height: 100px;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        .symbol-item svg {
+            width: 60px;
+            height: 60px;
+            fill: #333; /* Ensure symbols are visible */
+            stroke: #333; /* Ensure outlines are visible */
+        }
+        .symbol-item p {
+            margin-top: 5px;
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Game Symbols for Each Puzzle</h1>
+
+    <div id="symbols-container"></div>
+
+    <script>
+        function generateSymbols(seed) {
+            const symbolSVGs = [
+                // Set 1: Basic shapes
+                `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M 20 20 L 80 80 M 80 20 L 20 80" stroke="currentColor" stroke-width="8"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M50,10 L50,90 M10,50 L90,50" stroke="currentColor" stroke-width="8"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M20,80 Q50,10 80,80" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M50 10 V 90 L 90 50" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M15,15 h70 v70 h-70 z m15,15 h40 v40 h-40 z" stroke="currentColor" stroke-width="4" fill="currentColor"/></svg>`,
+                // Set 2: "Magical" shapes
+                `<svg viewBox="0 0 100 100"><path d="M50 2l11 22 24 4-18 18 4 24-22-11-22 11 4-24-18-18 24-4z" stroke="currentColor" stroke-width="4" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M25 75 A 40 40 0 0 1 75 25" stroke="currentColor" stroke-width="8" fill="none"/><circle cx="75" cy="25" r="10" fill="currentColor"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M10 50 C 40 10, 60 10, 90 50 S 60 90, 10 50" stroke="currentColor" stroke-width="6" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M50 10 L70 40 L95 40 L75 60 L85 90 L50 70 L15 90 L25 60 L5 40 L30 40 Z" fill="currentColor"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M50,90 C40,70 40,30 50,10 C60,30 60,70 50,90 Z" stroke="currentColor" stroke-width="6" fill="none"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M20,20 L80,20 L50,80 Z" stroke="currentColor" stroke-width="8" fill="none"/><circle cx="50" cy="45" r="8" fill="currentColor"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M20,50 L50,20 L80,50 L50,80 Z" stroke="currentColor" stroke-width="8" fill="currentColor"/></svg>`,
+                `<svg viewBox="0 0 100 100"><path d="M50 20 C 80 20, 80 80, 50 80 C 20 80, 20 20, 50 20 M 50 30 C 70 30, 70 70, 50 70 C 30 70, 30 30, 50 30" stroke="currentColor" stroke-width="4" fill="none"/></svg>`,
+            ];
+
+            const result = [];
+            const startIndex = (seed * 3) % symbolSVGs.length;
+            for (let i = 0; i < 8; i++) {
+                const index = (startIndex + i * 2) % symbolSVGs.length;
+                result.push({ id: `p${seed}_s${i+1}`, svg: symbolSVGs[index] });
+            }
+            return result;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const symbolsContainer = document.getElementById('symbols-container');
+
+            for (let i = 0; i < 10; i++) {
+                const puzzleSymbols = generateSymbols(i);
+                const puzzleSection = document.createElement('div');
+                puzzleSection.classList.add('puzzle-section');
+                puzzleSection.innerHTML = `<h2>Puzzle ${i + 1} Symbols</h2>`;
+                
+                const symbolPaletteDiv = document.createElement('div');
+                symbolPaletteDiv.classList.add('symbol-palette');
+
+                puzzleSymbols.forEach((symbol, index) => {
+                    const symbolItem = document.createElement('div');
+                    symbolItem.classList.add('symbol-item');
+                    symbolItem.innerHTML = `${symbol.svg}<p>Symbol ${index + 1}</p>`;
+                    symbolPaletteDiv.appendChild(symbolItem);
+                });
+                
+                puzzleSection.appendChild(symbolPaletteDiv);
+                symbolsContainer.appendChild(puzzleSection);
+            }
+        });
+    </script>
+</body>
+</html>

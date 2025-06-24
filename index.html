@@ -15,7 +15,7 @@
             --accent-purple: #9a4cff;
             --accent-gold: #f7d716;
             --light-text: #e0e0e0;
-            --glow-color: #c792ea;
+            --glow-color: #d0aee6;
             --door-color: #6B4F3A;
             --door-frame: #4a3728;
             --symbol-bg: #2a2a4a;
@@ -220,6 +220,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1; /* Ensure orb is in front of glow */
+            opacity: 1;
         }
         
         .crystal-ball-glow {
@@ -231,8 +232,7 @@
             height: 150px; /* Smaller base size */
             border-radius: 50%;
             background: var(--glow-color);
-            opacity: 0.7;
-            filter: blur(50px);
+            box-shadow: 0 0 60px 20px rgba(199, 146, 234, 0.6); /* Using box-shadow for glow */
             transition: transform 0.1s ease-in-out, opacity 0.1s ease-in-out;
             pointer-events: none;
             transform-origin: center;
@@ -961,8 +961,8 @@
             // Map average from [20, 60] to [0, 1] for more pronounced effect.
             const normalizedAverage = Math.min(Math.max((average - 20) / 40, 0), 1); 
             
-            const scale = 1 + normalizedAverage * 1.5; // Increased scale for more impact (from 1 to 2.5)
-            const opacity = 0.7 + normalizedAverage * 0.8; // Increased opacity range for more impact (from 0.7 to 1.5)
+            const scale = 1.5 + normalizedAverage * 0; // 
+            const opacity = 0.4 + normalizedAverage * 0.4; // Increased opacity range for more impact (from 0.4 to 0.8)
             
             glowElement.style.transform = `translate(-50%, -50%) scale(${scale})`;
             glowElement.style.opacity = `${opacity}`;
