@@ -35,14 +35,14 @@ Script:
 "uh"
 
 
-"First you must seek a dog wearing a witches hat, surrounded by pumpkins, in the spooky month of Halloween."
-"Find the secret behind an ancient Japanese shrine, nestled amidst the snow, on a door to the cold."
-"Upon the mighty robot's back, near the very spark of its life – the on off switch."
-"Discover the hidden truth under the place where a boy keeps his books to read, close by the quiet contemplation of the ceramic throne."
-"Uncover the mystery under the sandpit in Maisie's house, where grains of magic reside."
-"Gaze behind the mirror where the Father checks the pipes, revealing reflections of hidden paths."
-"Journey inside a small pumpkin with a smile, for it holds a joyful secret."
-"Find the treasure under the bird house, beneath the dwelling of winged wonders."
-"Seek the red dragon in Dragon Wood, for the code lies on its majestic form."
-"Unearth the wisdom under the golden buddha, a beacon of serene truth."
+1 "First you must seek a dog wearing a witches hat, surrounded by pumpkins, in the spooky month of Halloween."
+2 "Find the secret behind an ancient Japanese shrine, nestled amidst the snow, on a door to the cold."
+3 "Upon the mighty robot's back, near the very spark of its life – the on off switch."
+4 "Discover the hidden truth under the place where a boy keeps his books to read, close by the quiet contemplation of the ceramic throne."
+5 "Uncover the mystery under the sandpit in Maisie's house, where grains of magic reside."
+6 "Gaze behind the mirror where the Father checks the pipes, revealing reflections of hidden paths."
+7 "Journey inside a small pumpkin with a smile, for it holds a joyful secret."
+8 "Find the treasure under the bird house, beneath the dwelling of winged wonders."
+9 "Seek the red dragon in Dragon Wood, for the code lies on its majestic form." done
+10 "Unearth the wisdom under the golden buddha, a beacon of serene truth." done
 

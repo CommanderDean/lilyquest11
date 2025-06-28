@@ -1080,8 +1080,8 @@
                 }, 1000); // Wait for animation
             } else {
                 // FAILURE
-                playSoundEffect(errorSoundFile);
-                showModal('The symbols are not aligned. Try again.', true);
+                const randomCoughIndex = Math.floor(Math.random() * 5) + 1; // 1 to 5
+                playSoundEffect(`audio/cough${randomCoughIndex}.mp3`);
                 document.querySelector('.puzzle-layout').animate([
                     { transform: 'translateX(0px)' },
                     { transform: 'translateX(-10px)' },
@@ -1437,12 +1437,14 @@
             // Hide modal on click/touch (This listener should only be active AFTER password is correct)
             modal.addEventListener('click', () => {
                 modal.classList.remove('visible');
-                // Play intro audio when modal is dismissed
-                playAudio(introAudioFile, () => {
-                    // After intro finishes, set introFinished to true and lastPlayedAudio to the first clue
-                    introFinished = true;
-                    lastPlayedAudio = puzzleData[0].audioClueFile;
-                });
+                // Play intro audio when modal is dismissed, ONLY if intro hasn't played yet.
+                if (!introFinished) {
+                    playAudio(introAudioFile, () => {
+                        // After intro finishes, set introFinished to true and lastPlayedAudio to the first clue
+                        introFinished = true;
+                        lastPlayedAudio = puzzleData[0].audioClueFile;
+                    });
+                }
             });
         }
 
