@@ -774,6 +774,16 @@
             </div>
             <p id="crystal-ball-prompt"></p>
 
+            <!-- Ending sequence buttons -->
+            <div id="ending-yes-no-buttons" style="display: none; position: absolute; top: 70%; left: 50%; transform: translateX(-50%); gap: 20px;">
+                <button id="ending-yes-btn" class="puzzle-btn">Yes</button>
+                <button id="ending-no-btn" class="puzzle-btn">No</button>
+            </div>
+
+            <div id="ending-continue-button" style="display: none; position: absolute; top: 70%; left: 50%; transform: translateX(-50%);">
+                <button id="ending-continue-btn" class="puzzle-btn">Continue</button>
+            </div>
+
             <!-- New Hint Element -->
             <div id="puzzle-nav-hint" class="nav-hint">
                 <span class="hint-text">Click here to see the door</span>
@@ -809,6 +819,7 @@
                     <div class="puzzle-controls">
                         <button id="clear-btn" class="puzzle-btn">Clear</button>
                         <button id="unlock-btn" class="puzzle-btn">Unlock</button>
+                        <button id="test-unlock-btn" class="puzzle-btn" style="background: #e74c3c; color: white;">Test Unlock</button>
                     </div>
                 </div>
             </div>
@@ -829,8 +840,7 @@
         <div id="note-scene" class="scene">
             <div class="note-paper">
                 <h2>A Secret Note for the Seeker!</h2>
-                <p>Congratulations, Lincoln! You have proven your wisdom and solved all the mysteries of the Birthday Quest. To recieve your gift, simply face your Father and speak these words cleary three times...</p>
-                <p><strong>...Wibbly-wobbly walruses weave wildly woolly wigs!</strong></p>
+                <p>Congratulations, Lily! You have proven your wisdom and solved all the mysteries of the Birthday Quest. To recieve your gift... 
                 <p></p>
             </div>
              <div id="nav-to-crystal-ball-from-note" class="nav-icon" title="Return to the Crystal Ball">
@@ -901,6 +911,10 @@
         const unlockSoundFile = 'audio/unlock.mp3';
         const errorSoundFile = 'audio/error.mp3';
         const clickSoundFile = 'audio/click.mp3';
+        const areYouSure1AudioFile = 'audio/are-you-sure1.mp3';
+        const areYouSure2AudioFile = 'audio/are-you-sure2.mp3';
+        const locationAudioFile = 'audio/location.mp3';
+        const locationRepeatAudioFile = 'audio/location-repeat.mp3';
 
         // --- GAME STATE ---
         let currentPuzzleIndex = 0;
@@ -909,6 +923,9 @@
         let gameCompleted = false;
         let audioBeforeInterruption = null;
         let introFinished = false;
+        
+        // Ending sequence state
+        let endingPhase = null; // null, 'phase1', 'phase2', 'phase3', 'phase4', 'final'
 
         // --- AUDIO SYSTEM ---
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -1001,6 +1018,7 @@
         const codeSlots = document.querySelectorAll('.slot');
         const clearBtn = document.getElementById('clear-btn');
         const unlockBtn = document.getElementById('unlock-btn');
+        const testUnlockBtn = document.getElementById('test-unlock-btn');
         const modal = document.getElementById('message-modal');
         const modalContent = document.getElementById('modal-content');
         const modalText = document.getElementById('modal-text');
@@ -1080,8 +1098,8 @@
                 }, 1000); // Wait for animation
             } else {
                 // FAILURE
-                const randomCoughIndex = Math.floor(Math.random() * 5) + 1; // 1 to 5
-                playSoundEffect(`audio/cough${randomCoughIndex}.mp3`);
+                const randomNopeIndex = Math.floor(Math.random() * 7) + 1; // 1 to 7
+                playSoundEffect(`audio/nope${randomNopeIndex}.mp3`);
                 document.querySelector('.puzzle-layout').animate([
                     { transform: 'translateX(0px)' },
                     { transform: 'translateX(-10px)' },
@@ -1092,14 +1110,54 @@
                 ], { duration: 500, iterations: 1 });
             }
         }
+
+        function testUnlock() {
+            // TEST UNLOCK FUNCTION - bypasses code checking for testing purposes
+            playSoundEffect(unlockSoundFile);
+            doorContainer.classList.add('unlocked');
+            
+            setTimeout(() => {
+                currentPuzzleIndex++;
+                if (currentPuzzleIndex >= puzzleData.length) {
+                    completeGame();
+                } else {
+                    // Show "Door unlocked!" message in the new scene
+                    doorUnlockedText.textContent = 'Door unlocked! (Test Mode)';
+                    showScene('doorUnlockedMessage');
+
+                    // Add one-time listener for the next message
+                    const nextMessageListener = () => {
+                        doorUnlockedMessageScene.removeEventListener('click', nextMessageListener); // Remove self
+                        doorUnlockedText.textContent = 'You find another locked door...';
+                        // After a brief delay, transition to crystal ball and load next puzzle
+                        setTimeout(() => {
+                            showScene('crystalBall');
+                            loadPuzzle(currentPuzzleIndex);
+                            playAudio(puzzleData[currentPuzzleIndex].audioClueFile); // Play new clue audio
+                        }, 1000); // Delay before showing crystal ball
+                    };
+                    doorUnlockedMessageScene.addEventListener('click', nextMessageListener);
+                }
+            }, 1000); // Wait for animation
+        }
         
         function completeGame() {
             gameCompleted = true;
+            endingPhase = 'phase1';
             showModal('You have solved all the puzzles!', false);
-            // Update nav icon to point to the note instead of the puzzle
-            navToPuzzleBtn.onclick = () => showScene('note');
+            
+            // Hide door navigation button since puzzles are complete
+            navToPuzzleBtn.style.display = 'none';
+            document.getElementById('puzzle-nav-hint').style.display = 'none';
+            
             setTimeout(() => {
-                showScene('note');
+                showScene('crystalBall');
+                // Start ending sequence by playing are-you-sure1.mp3
+                playAudio(areYouSure1AudioFile, () => {
+                    // After are-you-sure1.mp3 finishes, show Yes/No buttons
+                    endingPhase = 'phase2';
+                    document.getElementById('ending-yes-no-buttons').style.display = 'flex';
+                });
             }, 1500);
         }
 
@@ -1369,13 +1427,13 @@
             // Password screen logic
             passwordSubmit.addEventListener('click', () => {
                 const enteredPassword = passwordInput.value.trim().toLowerCase();
-                const correctPassword = 'eight'; // The password is "eight"
+                const correctPassword = 'eleven'; // The password is "eleven"
 
                 if (enteredPassword === correctPassword) {
                     passwordError.textContent = ''; // Clear any previous error
                     showScene('crystalBall'); // Show the main game scene
                     // Proceed with the original game initialization
-                    showModal('Happy birthday Lincoln! This is your birthday quest.', false);
+                    showModal('Happy birthday Lily! This is your birthday quest.', false);
                     loadPuzzle(0);
                 } else {
                     passwordError.textContent = 'Incorrect password. Try again.';
@@ -1406,6 +1464,17 @@
 
             // Game action listeners
             crystalBallActivator.addEventListener('click', () => {
+                // Handle ending sequence phases
+                if (gameCompleted && endingPhase === 'final') {
+                    // In final phase, always play location-repeat.mp3
+                    playAudio(locationRepeatAudioFile);
+                    return;
+                } else if (gameCompleted && endingPhase) {
+                    // During other ending phases, don't allow crystal ball interaction
+                    return;
+                }
+                
+                // Regular game logic
                 if (!mainAudio.paused && mainAudio.currentTime > 0) { // Audio is currently playing
                     mainAudio.pause();
                     audioBeforeInterruption = lastPlayedAudio; // Store the current audio
@@ -1433,6 +1502,40 @@
             });
             clearBtn.addEventListener('click', clearSlots);
             unlockBtn.addEventListener('click', checkCode);
+            testUnlockBtn.addEventListener('click', testUnlock);
+
+            // Ending sequence button listeners
+            document.getElementById('ending-yes-btn').addEventListener('click', () => {
+                // Hide Yes/No buttons and play are-you-sure-2.mp3
+                document.getElementById('ending-yes-no-buttons').style.display = 'none';
+                endingPhase = 'phase3';
+                playAudio(areYouSure2AudioFile, () => {
+                    // After are-you-sure-2.mp3 finishes, show Continue button
+                    endingPhase = 'phase4';
+                    document.getElementById('ending-continue-button').style.display = 'block';
+                });
+            });
+
+            document.getElementById('ending-no-btn').addEventListener('click', () => {
+                // Hide Yes/No buttons and play are-you-sure-2.mp3
+                document.getElementById('ending-yes-no-buttons').style.display = 'none';
+                endingPhase = 'phase3';
+                playAudio(areYouSure2AudioFile, () => {
+                    // After are-you-sure-2.mp3 finishes, show Continue button
+                    endingPhase = 'phase4';
+                    document.getElementById('ending-continue-button').style.display = 'block';
+                });
+            });
+
+            document.getElementById('ending-continue-btn').addEventListener('click', () => {
+                // Hide Continue button and play location.mp3
+                document.getElementById('ending-continue-button').style.display = 'none';
+                endingPhase = 'phase5';
+                playAudio(locationAudioFile, () => {
+                    // After location.mp3 finishes, set to final phase
+                    endingPhase = 'final';
+                });
+            });
 
             // Hide modal on click/touch (This listener should only be active AFTER password is correct)
             modal.addEventListener('click', () => {

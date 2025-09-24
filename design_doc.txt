@@ -1,22 +1,22 @@
-Web App Development Plan: Lincoln's Wizard's Table Quest 🧙‍♂️📜 
+Web App Development Plan: Lily's Wizard's Table Quest 🧙‍♂️📜 
 
-To the AI Developer: This document outlines the plan for creating a web application for Dean Watkin's son, Lincoln. Please follow these specifications to build the interactive game.
-1. Project Overview & Goal The goal is to develop an interactive web application themed around a "Wizard's Table." Lincoln will interact with a crystal ball on this table. The crystal ball will provide audio clues (voiced by Dean) to help Lincoln find physical 4-digit codes hidden in the real world. Lincoln will then use these codes (which this AI will generate) within the web app to solve a series of symbol-based puzzles, progressively unlocking mystical items or secrets on the wizard's table. The game culminates when all 10 puzzles are solved. This app is intended to be minimalistic in UI but rich in atmosphere.
+To the AI Developer: This document outlines the plan for creating a web application for Dean Watkin's daughter, Lily. Please follow these specifications to build the interactive game.
+1. Project Overview & Goal The goal is to develop an interactive web application themed around a "Wizard's Table." Lily will interact with a crystal ball on this table. The crystal ball will provide audio clues (voiced by Dean) to help Lily find physical 4-digit codes hidden in the real world. Lily will then use these codes (which this AI will generate) within the web app to solve a series of symbol-based puzzles, progressively unlocking mystical items or secrets on the wizard's table. The game culminates when all 10 puzzles are solved. This app is intended to be minimalistic in UI but rich in atmosphere.
 2. Target User
-Primary User: Lincoln (Dean's son, born 2017, approx. 8 years old).
+Primary User: Lily (Dean's daughter, born 2013, approx. 11 years old).
 Considerations: Puzzles and interactions should be intuitive and engaging for this age group.
 3. Core Gameplay Loop The game progresses through a loop for each hidden code/puzzle:
 Initial Introduction (First-time Play):
 The Crystal Ball on the Wizard's Table gives an overall introduction to the quest (audio provided by Dean).
 For Each of the 10 Puzzles (e.g., Puzzle N):
-(A) Audio Clue Delivery: The Crystal Ball plays a specific audio clue from the main crystal ball page (provided by Dean) that directs Lincoln to find the physical 4-digit code for Puzzle N in the house. This becomes the "last played message."
-(B) Physical Code Search: Lincoln uses the audio clue to find the hidden 4-digit code.
-(C) Puzzle Interaction & Solving: Lincoln returns to the web app. He sees a "locked" item on the wizard's table and a puzzle interface. He uses the 4-digit code he found to solve the Symbol Alignment Puzzle.
+(A) Audio Clue Delivery: The Crystal Ball plays a specific audio clue from the main crystal ball page (provided by Dean) that directs Lily to find the physical 4-digit code for Puzzle N in the house. This becomes the "last played message."
+(B) Physical Code Search: Lily uses the audio clue to find the hidden 4-digit code.
+(C) Puzzle Interaction & Solving: Lily returns to the web app. She sees a "locked" item on the wizard's table and a puzzle interface. She uses the 4-digit code she found to solve the Symbol Alignment Puzzle.
 (D) Unlocking & Progression:
 Correct Code: The item on the table unlocks with a visual/audio flourish. The app then progresses to deliver the audio clue for the next puzzle (N+1).
-Incorrect Code: A gentle error indication is given, and Lincoln can try solving the puzzle again.
+Incorrect Code: A gentle error indication is given, and Lily can try solving the puzzle again.
 Game Completion: After all 10 puzzles are solved, a final congratulatory message and animation are displayed.
-Replay Last Message: At any point after an audio message has played (intro or clue), Lincoln can trigger a replay of that last played Crystal Ball message.
+Replay Last Message: At any point after an audio message has played (intro or clue), Lily can trigger a replay of that last played Crystal Ball message.
 4. Number of Puzzles & AI Code Generation
 The game will consist of 10 puzzles.
 AI Task - Code Generation:
@@ -28,7 +28,7 @@ Dean Will Provide:
 
 
 🎙️ Main Introductory Audio File: For the initial Crystal Ball speech. (Format: MP3 or WAV).
-🎙️ Series of 10 Audio Clue Files: One separate audio file for each of the 10 puzzles, guiding Lincoln to the next physical code. (Format: MP3 or WAV).
+🎙️ Series of 10 Audio Clue Files: One separate audio file for each of the 10 puzzles, guiding Lily to the next physical code. (Format: MP3 or WAV).
 
 AI Will Generate/Handle:
 
@@ -71,7 +71,7 @@ A unique "locked item" graphic.
 Four empty slots for symbol input.
 A palette of 8 unique symbols specific to Puzzle N, displayed in a fixed order.
 Interaction:
-Lincoln uses his 4-digit code (composed of digits 1-8, e.g., "2518").
+Lily uses her 4-digit code (composed of digits 1-8, e.g., "2518").
 Digits correspond to the 1-indexed position of symbols in the current puzzle's palette.
 "Clear/Reset Slots" and "Unlock/Check Code" buttons are essential.
 Code Logic: Compares selected symbol sequence against the correctCode for the current puzzle.
@@ -80,7 +80,7 @@ There will be two main scenes that the user will change between.  One is the cry
 On the crystal ball scene there will be a door icon to go to the door. On the door scene there will be an icon to get to the crystal ball.
 Crystal ball scene: This is where the player listens to the latest instructions from the crystal ball. These instructions will change as the game progresses.
 Door scene:  This will be the scene where the player solves the puzzle. There will be an image of a door with 4 slots for the code. Beside the door will be the 8 code symbols that can be dragged into the door slots. Somehow we need to give a clue that the order of the code symbols is imortant since the user will need to figure out that each symbol represents a number.
-Note scene: Behind the last door will be a note.  This note will tell lincoln the location of his pbirthday present. Lincoln the note scene will include an icon that leads back to the crystal ball.  When the player has reached the crystal ball then the crystal ball scene will have an icon that leads to the note instead of the door.    
+Note scene: Behind the last door will be a note.  This note will tell Lily the location of her birthday present. The note scene will include an icon that leads back to the crystal ball.  When the player has reached the crystal ball then the crystal ball scene will have an icon that leads to the note instead of the door.
 6.5. Game State & Data Management
 A JavaScript array of 10 puzzle configuration objects. AI Developer will populate this, including the AI-generated correctCode for each.
  JavaScript
@@ -106,7 +106,3 @@ Graphics: SVGs / PNGs / JPEGs as appropriate. Images easily replaceable via path
 Audio: HTML5 <audio> and Web Audio API.
 Responsiveness: Essential.
 No Backend: Purely client-side.
-
-
-
-
