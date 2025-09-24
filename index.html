@@ -918,7 +918,6 @@
 
         // --- GAME STATE ---
         let currentPuzzleIndex = 0;
-        let lastPlayedAudio = null;
         let userInputCode = [null, null, null, null];
         let gameCompleted = false;
         let audioBeforeInterruption = null;
@@ -937,12 +936,15 @@
         let audioSourceNode;
         const glowElement = document.querySelector('.crystal-ball-glow');
 
-        function playAudio(url, onEndedCallback) {
+        function playAudio(url, onEndedCallback, isInterrupt = false) {
             if (audioContext.state === 'suspended') {
                 audioContext.resume();
             }
             mainAudio.src = url;
-            lastPlayedAudio = url; // Store for replay
+            if (!isInterrupt) {
+                // Only update the main audio trackers if it's not an interruption
+                lastPlayedAudio = url; 
+            }
             
             if (!audioSourceNode) {
                 audioSourceNode = audioContext.createMediaElementSource(mainAudio);
@@ -1429,7 +1431,7 @@
             // Password screen logic
             passwordSubmit.addEventListener('click', () => {
                 const enteredPassword = passwordInput.value.trim().toLowerCase();
-                const correctPassword = 'eleven'; // The password is "eleven"
+                const correctPassword = 'eleventoday2025'; // The password is "eleventoday2025"
 
                 if (enteredPassword === correctPassword) {
                     passwordError.textContent = ''; // Clear any previous error
@@ -1471,7 +1473,8 @@
                     if (endingPhase === 'final') {
                         playAudio(locationRepeatAudioFile);
                     }
-                    return; // During other ending phases, clicks do nothing.
+                    // During other ending phases, clicks do nothing.
+                    return;
                 }
 
                 const isPlaying = !mainAudio.paused && !mainAudio.ended && mainAudio.currentTime > 0;
@@ -1479,9 +1482,10 @@
                 if (isPlaying) {
                     // 1. Interrupt playing audio
                     mainAudio.pause();
-                    audioBeforeInterruption = lastPlayedAudio;
+                    // We need to store the actual src, not just the last played clue file
+                    audioBeforeInterruption = mainAudio.src; 
                     const randomCoughIndex = Math.floor(Math.random() * 4) + 1;
-                    playAudio(`audio/cough${randomCoughIndex}.mp3`);
+                    playAudio(`audio/cough${randomCoughIndex}.mp3`, null, true); // Pass true for isInterrupt
                 } else if (audioBeforeInterruption) {
                     // 2. Resume interrupted audio
                     playAudio(audioBeforeInterruption);
@@ -1492,14 +1496,8 @@
                         introFinished = true;
                     });
                 } else {
-                    // 4. Handle clicks after the intro is finished
-                    if (lastPlayedAudio === introAudioFile) {
-                        // If the last thing that finished was the intro, play the first clue.
-                        playAudio(puzzleData[0].audioClueFile);
-                    } else {
-                        // Otherwise, just replay the last played clue.
-                        playAudio(lastPlayedAudio);
-                    }
+                    // 4. Play the current puzzle's clue
+                    playAudio(puzzleData[currentPuzzleIndex].audioClueFile);
                 }
             });
             clearBtn.addEventListener('click', clearSlots);
