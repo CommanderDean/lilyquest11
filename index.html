@@ -819,7 +819,6 @@
                     <div class="puzzle-controls">
                         <button id="clear-btn" class="puzzle-btn">Clear</button>
                         <button id="unlock-btn" class="puzzle-btn">Unlock</button>
-                        <button id="test-unlock-btn" class="puzzle-btn" style="background: #e74c3c; color: white;">Test Unlock</button>
                     </div>
                 </div>
             </div>
@@ -1020,7 +1019,6 @@
         const codeSlots = document.querySelectorAll('.slot');
         const clearBtn = document.getElementById('clear-btn');
         const unlockBtn = document.getElementById('unlock-btn');
-        const testUnlockBtn = document.getElementById('test-unlock-btn');
         const modal = document.getElementById('message-modal');
         const modalContent = document.getElementById('modal-content');
         const modalText = document.getElementById('modal-text');
@@ -1114,37 +1112,6 @@
             }
         }
 
-        function testUnlock() {
-            // TEST UNLOCK FUNCTION - bypasses code checking for testing purposes
-            introFinished = true; // Ensure intro is marked as finished
-            playSoundEffect(unlockSoundFile);
-            doorContainer.classList.add('unlocked');
-            
-            setTimeout(() => {
-                currentPuzzleIndex++;
-                if (currentPuzzleIndex >= puzzleData.length) {
-                    completeGame();
-                } else {
-                    // Show "Door unlocked!" message in the new scene
-                    doorUnlockedText.textContent = 'Door unlocked! (Test Mode)';
-                    showScene('doorUnlockedMessage');
-
-                    // Add one-time listener for the next message
-                    const nextMessageListener = () => {
-                        doorUnlockedMessageScene.removeEventListener('click', nextMessageListener); // Remove self
-                        doorUnlockedText.textContent = 'You find another locked door...';
-                        // After a brief delay, transition to crystal ball and load next puzzle
-                        setTimeout(() => {
-                            showScene('crystalBall');
-                            loadPuzzle(currentPuzzleIndex);
-                            playAudio(puzzleData[currentPuzzleIndex].audioClueFile); // Play new clue audio
-                        }, 1000); // Delay before showing crystal ball
-                    };
-                    doorUnlockedMessageScene.addEventListener('click', nextMessageListener);
-                }
-            }, 1000); // Wait for animation
-        }
-        
         function completeGame() {
             gameCompleted = true;
             endingPhase = 'phase1';
@@ -1502,7 +1469,6 @@
             });
             clearBtn.addEventListener('click', clearSlots);
             unlockBtn.addEventListener('click', checkCode);
-            testUnlockBtn.addEventListener('click', testUnlock);
 
             // Ending sequence button listeners
             document.getElementById('ending-yes-btn').addEventListener('click', () => {
