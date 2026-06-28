@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Birthday Quest</title>
+    <title>Lincoln's Birthday Quest</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
@@ -44,6 +44,100 @@
             position: relative;
         }
 
+        /* Progress Indicator */
+        #progress-indicator {
+            position: fixed;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent-gold);
+            font-family: 'MedievalSharp', cursive;
+            font-size: clamp(0.75rem, 2vw, 1rem);
+            text-shadow: 0 0 8px rgba(247, 215, 22, 0.7);
+            z-index: 200;
+            letter-spacing: 1px;
+            display: none;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        /* Restart Button */
+        #restart-btn {
+            position: fixed;
+            top: 12px;
+            left: 15px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 50%;
+            border: 1.5px solid rgba(247, 215, 22, 0.35);
+            cursor: pointer;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        #restart-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: var(--accent-gold);
+            transform: rotate(-40deg);
+        }
+
+        #restart-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: rgba(247, 215, 22, 0.5);
+            transition: fill 0.3s;
+            pointer-events: none;
+        }
+
+        #restart-btn:hover svg {
+            fill: var(--accent-gold);
+        }
+
+        /* Confirm Modal */
+        .confirm-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 400px;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .confirm-cancel {
+            background: #555 !important;
+            color: #fff !important;
+        }
+
+        .confirm-cancel:hover {
+            background: #777 !important;
+            color: #fff !important;
+        }
+
+        /* Hidden dev/test auto-solve button — bottom-left corner, invisible */
+        #dev-solve-btn {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 9999;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
         /* Scene Management */
         .scene {
             position: absolute;
@@ -66,7 +160,7 @@
             transition: opacity 0.5s linear;
         }
 
-        /* Password Screen Specific Styles */
+        /* Password Screen */
         #password-screen {
             background: var(--primary-bg);
             color: var(--light-text);
@@ -76,7 +170,7 @@
             justify-content: center;
             align-items: center;
             gap: 20px;
-            z-index: 1001; /* Ensure it's on top */
+            z-index: 1001;
         }
 
         #password-screen h1 {
@@ -125,11 +219,11 @@
 
         #password-error {
             font-size: 1.2rem;
-            color: #e57373; /* A soft red for errors */
+            color: #e57373;
             margin-top: 10px;
-            height: 1.2em; /* Reserve space to prevent layout shift */
+            height: 1.2em;
         }
-        
+
         /* Navigation Icons */
         .nav-icon {
             position: absolute;
@@ -162,20 +256,20 @@
         /* Navigation Hint */
         .nav-hint {
             position: absolute;
-            bottom: 35px; /* Align with the nav-icon */
-            right: 90px; /* Position to the left of the nav-icon */
+            bottom: 35px;
+            right: 90px;
             display: flex;
             align-items: center;
             color: var(--light-text);
             font-size: 1.1rem;
             opacity: 1;
             transition: opacity 0.5s ease-out;
-            z-index: 99; /* Below nav-icon but above other elements */
+            z-index: 99;
         }
 
         .nav-hint.hidden {
             opacity: 0;
-            pointer-events: none; /* Make it unclickable when hidden */
+            pointer-events: none;
         }
 
         .hint-text {
@@ -184,22 +278,22 @@
         }
 
         .hint-arrow {
-            font-size: 2rem; /* Larger arrow */
+            font-size: 2rem;
             line-height: 1;
             color: var(--accent-gold);
-            animation: bounceArrow 1s infinite; /* Simple animation */
+            animation: bounceArrow 1s infinite;
         }
 
         @keyframes bounceArrow {
             0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(5px); }
+            50%       { transform: translateX(5px); }
         }
 
         /* Crystal Ball Scene */
         #crystal-ball-scene h1 {
             font-family: 'MedievalSharp', cursive;
             font-size: 2.5rem;
-            margin-bottom: 220px; /* Moved up even further */
+            margin-bottom: 220px;
             color: var(--accent-gold);
             text-shadow: 0 0 10px var(--accent-gold);
         }
@@ -219,55 +313,42 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 1; /* Ensure orb is in front of glow */
+            z-index: 1;
             opacity: 1;
+            filter: drop-shadow(0 0 12px rgba(199, 146, 234, 0.5));
         }
-        
+
         .crystal-ball-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 150px; /* Smaller base size */
-            height: 150px; /* Smaller base size */
-            border-radius: 50%;
-            background: var(--glow-color);
-            box-shadow: 0 0 60px 20px rgba(199, 146, 234, 0.6); /* Using box-shadow for glow */
-            transition: transform 0.1s ease-in-out, opacity 0.1s ease-in-out;
-            pointer-events: none;
-            transform-origin: center;
-            z-index: 0; /* Place glow behind the orb */
+            display: none; /* Replaced by drop-shadow filter on the orb image */
         }
 
         .crystal-ball-container p {
-            /* This rule is for the p inside crystal-ball-container, not the prompt.
-               The prompt is a direct child of #crystal-ball-scene. */
             margin-top: 20px;
             font-size: 1.2rem;
             font-style: italic;
         }
-        /* Adjust the prompt text margin */
+
         #crystal-ball-prompt {
-            margin-top: 150px; /* Increased margin to push it down */
+            margin-top: 150px;
         }
-        
+
         /* Puzzle Scene */
         #puzzle-scene {
-            padding: 20px; /* Add some padding to the scene itself */
-            box-sizing: border-box; /* Include padding in element's total width and height */
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .puzzle-layout {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-items: center; /* Changed to center for better vertical alignment on smaller screens */
-            gap: 4vw; /* Use viewport width for gap */
-            padding: 2vw; /* Use viewport width for padding */
-            max-width: 1200px; /* Increased max-width for larger screens */
-            width: 95%; /* Make it take up more width on smaller screens */
-            margin: auto; /* Center the layout */
-            height: 100%; /* Allow it to take full height */
+            align-items: center;
+            gap: 4vw;
+            padding: 2vw;
+            max-width: 1200px;
+            width: 95%;
+            margin: auto;
+            height: 100%;
             box-sizing: border-box;
         }
 
@@ -275,61 +356,67 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2vw; /* Use viewport width for gap */
-            flex-shrink: 0; /* Prevent shrinking */
-            flex-grow: 1; /* Allow growing */
-            min-width: 280px; /* Minimum width for areas */
-            max-width: 450px; /* Maximum width for areas */
+            gap: 2vw;
+            flex-shrink: 0;
+            flex-grow: 1;
+            min-width: 280px;
+            max-width: 450px;
         }
 
         .locked-door {
-            width: 25vw; /* Use viewport width */
-            height: 35vw; /* Use viewport width */
-            max-width: 250px; /* Max size for desktop */
-            max-height: 350px; /* Max size for desktop */
-            min-width: 150px; /* Min size for mobile */
-            min-height: 210px; /* Min size for mobile */
+            width: 25vw;
+            height: 35vw;
+            max-width: 250px;
+            max-height: 350px;
+            min-width: 150px;
+            min-height: 210px;
             background-color: var(--door-color);
-            border: 1vw solid var(--door-frame); /* Responsive border */
-            max-border-width: 10px; /* Max border size */
-            border-radius: 1vw 1vw 0 0; /* Responsive border radius */
+            border: 1vw solid var(--door-frame);
+            border-radius: 1vw 1vw 0 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: transform 0.5s ease-in-out;
+            transition: transform 0.6s ease-in-out;
             box-sizing: border-box;
         }
 
+        @keyframes unlockFlash {
+            0%   { box-shadow: 0 0 0px   0px  rgba(247, 215, 22, 0); }
+            25%  { box-shadow: 0 0 80px  30px rgba(247, 215, 22, 0.95); }
+            75%  { box-shadow: 0 0 60px  20px rgba(247, 215, 22, 0.5); }
+            100% { box-shadow: 0 0 0px   0px  rgba(247, 215, 22, 0); }
+        }
+
         .locked-door.unlocked {
-            transform: perspective(1200px) rotateY(90deg);
+            transform: perspective(1200px) rotateY(110deg);
+            animation: unlockFlash 1.2s ease-out forwards;
         }
 
         .code-slots {
             display: flex;
-            gap: 1vw; /* Responsive gap */
-            margin-top: 2vw; /* Responsive margin */
-            flex-wrap: wrap; /* Allow slots to wrap on smaller screens */
+            gap: 1vw;
+            margin-top: 2vw;
+            flex-wrap: wrap;
             justify-content: center;
         }
 
         .slot {
-            width: 6vw; /* Responsive width */
-            height: 6vw; /* Responsive height */
-            max-width: 60px; /* Max size for desktop */
-            max-height: 60px; /* Max size for desktop */
-            min-width: 40px; /* Min size for mobile */
-            min-height: 40px; /* Min size for mobile */
+            width: 6vw;
+            height: 6vw;
+            max-width: 60px;
+            max-height: 60px;
+            min-width: 40px;
+            min-height: 40px;
             background: var(--secondary-bg);
-            border: 0.2vw dashed var(--accent-purple); /* Responsive border */
-            max-border-width: 2px; /* Max border size */
-            border-radius: 1vw; /* Responsive border radius */
+            border: 0.2vw dashed var(--accent-purple);
+            border-radius: 1vw;
             display: flex;
             justify-content: center;
             align-items: center;
             box-sizing: border-box;
-            touch-action: none; /* Prevent default touch actions like scrolling */
+            touch-action: none;
         }
-        
+
         .slot.drag-over {
             background: var(--accent-purple);
             opacity: 0.5;
@@ -342,50 +429,51 @@
         .symbol-area h2 {
             margin-bottom: 0;
             color: var(--accent-gold);
-            font-size: clamp(1.5rem, 3vw, 2.5rem); /* Responsive font size */
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
         }
 
         .symbol-palette {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* Default for larger screens */
-            gap: 1.5vw; /* Responsive gap */
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5vw;
             background: var(--primary-bg);
-            padding: 1.5vw; /* Responsive padding */
-            border-radius: 1vw; /* Responsive border radius */
-            border: 0.2vw solid var(--accent-gold); /* Responsive border */
-            max-width: 400px; /* Limit palette width on larger screens */
+            padding: 1.5vw;
+            border-radius: 1vw;
+            border: 0.2vw solid var(--accent-gold);
+            max-width: 400px;
             box-sizing: border-box;
         }
 
         .symbol-icon {
-            width: 6vw; /* Responsive width */
-            height: 6vw; /* Responsive height */
-            max-width: 60px; /* Max size for desktop */
-            max-height: 60px; /* Max size for desktop */
-            min-width: 40px; /* Min size for mobile */
-            min-height: 40px; /* Min size for mobile */
+            width: 6vw;
+            height: 6vw;
+            max-width: 60px;
+            max-height: 60px;
+            min-width: 40px;
+            min-height: 40px;
             background: var(--symbol-bg);
-            border-radius: 1vw; /* Responsive border radius */
+            border-radius: 1vw;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: grab;
             transition: all 0.2s;
             box-sizing: border-box;
-            touch-action: none; /* Prevent default touch actions like scrolling */
+            touch-action: none;
+            position: relative; /* for .symbol-number positioning */
         }
 
         .symbol-icon:hover {
             transform: scale(1.1);
             box-shadow: 0 0 10px var(--accent-purple);
         }
-        
+
         .symbol-icon.dragging {
             opacity: 0.5;
         }
 
         .symbol-icon.selected {
-            box-shadow: 0 0 15px 5px var(--glow-color); /* Visual feedback for selected state */
+            box-shadow: 0 0 15px 5px var(--glow-color);
             transform: scale(1.05);
         }
 
@@ -393,28 +481,41 @@
             width: 70%;
             height: 70%;
             fill: var(--light-text);
-            pointer-events: none; /* Important for drag and drop */
+            pointer-events: none;
+        }
+
+        /* Small position number on each symbol tile */
+        .symbol-number {
+            position: absolute;
+            bottom: 2px;
+            right: 4px;
+            font-size: 0.6rem;
+            color: var(--accent-gold);
+            font-family: 'MedievalSharp', cursive;
+            line-height: 1;
+            pointer-events: none;
+            opacity: 0.85;
         }
 
         .puzzle-controls {
             display: flex;
-            gap: 1.5vw; /* Responsive gap */
-            margin-top: 1.5vw; /* Responsive margin */
-            flex-wrap: wrap; /* Allow buttons to wrap */
+            gap: 1.5vw;
+            margin-top: 1.5vw;
+            flex-wrap: wrap;
             justify-content: center;
         }
 
         .puzzle-btn {
-            padding: 1.2vw 2.5vw; /* Responsive padding */
+            padding: 1.2vw 2.5vw;
             font-family: 'MedievalSharp', cursive;
-            font-size: clamp(1rem, 2vw, 1.2rem); /* Responsive font size */
+            font-size: clamp(1rem, 2vw, 1.2rem);
             background: var(--accent-gold);
             color: var(--primary-bg);
             border: none;
-            border-radius: 0.8vw; /* Responsive border radius */
+            border-radius: 0.8vw;
             cursor: pointer;
             transition: all 0.3s;
-            min-width: 80px; /* Minimum width for buttons */
+            min-width: 80px;
         }
 
         .puzzle-btn:hover {
@@ -429,9 +530,9 @@
         }
         #clear-btn:hover {
             background: #666;
-         }
+        }
 
-        /* Media Queries for Responsiveness */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .puzzle-layout {
                 flex-direction: column;
@@ -481,7 +582,7 @@
             .puzzle-controls {
                 gap: 2vw;
                 margin-top: 2vw;
-                justify-content: center; /* Center buttons */
+                justify-content: center;
             }
 
             .puzzle-btn {
@@ -508,25 +609,25 @@
             }
         }
 
-        @media (max-width: 480px) { /* Even smaller screens (phones portrait) */
+        @media (max-width: 480px) {
             .puzzle-layout {
-                gap: 15px; /* Reduced gap */
-                padding: 5px; /* Reduced padding */
+                gap: 15px;
+                padding: 5px;
             }
 
             .locked-door {
-                width: 44vw; /* 20% smaller */
-                height: 61.6vw; /* 20% smaller */
-                max-width: 160px; /* Adjusted max size */
-                max-height: 224px; /* Adjusted max size */
+                width: 44vw;
+                height: 61.6vw;
+                max-width: 160px;
+                max-height: 224px;
             }
 
             .code-slots {
-                gap: 1vw; /* Reduced gap */
+                gap: 1vw;
             }
 
             .slot {
-                width: 12vw; /* Slightly smaller slots */
+                width: 12vw;
                 height: 12vw;
                 max-width: 50px;
                 max-height: 50px;
@@ -534,61 +635,61 @@
 
             .symbol-palette {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 3vw; /* Reduced gap */
-                padding: 3vw; /* Reduced padding */
-                max-width: 180px; /* Further reduced max-width */
+                gap: 3vw;
+                padding: 3vw;
+                max-width: 180px;
             }
 
             .symbol-icon {
-                width: 12vw; /* Slightly smaller symbols */
+                width: 12vw;
                 height: 12vw;
                 max-width: 50px;
                 max-height: 50px;
             }
 
             .puzzle-btn {
-                padding: 2vw 4vw; /* Adjusted padding */
-                font-size: clamp(0.8rem, 3vw, 1.1rem); /* Adjusted font size */
+                padding: 2vw 4vw;
+                font-size: clamp(0.8rem, 3vw, 1.1rem);
             }
 
             .symbol-area p {
-                font-size: 0.6rem !important; /* Even smaller instruction text */
+                font-size: 0.6rem !important;
             }
 
             .symbol-area h2 {
-                font-size: clamp(1.1rem, 3.5vw, 1.8rem); /* Adjusted title size */
+                font-size: clamp(1.1rem, 3.5vw, 1.8rem);
             }
 
             .nav-icon {
-                width: 40px; /* Smaller nav icon */
+                width: 40px;
                 height: 40px;
-                bottom: 8px; /* Adjusted position */
+                bottom: 8px;
                 right: 8px;
             }
 
             .nav-icon svg {
-                width: 22px; /* Smaller nav icon SVG */
+                width: 22px;
                 height: 22px;
             }
 
             .nav-hint {
-                bottom: 15px; /* Adjusted position */
-                right: 55px; /* Adjusted position */
-                font-size: 0.8rem; /* Smaller hint text */
+                bottom: 15px;
+                right: 55px;
+                font-size: 0.8rem;
             }
         }
 
-        @media (max-width: 375px) { /* Very small phones (e.g., iPhone SE) */
+        @media (max-width: 375px) {
             .puzzle-layout {
-                gap: 10px; /* Further reduced gap */
+                gap: 10px;
                 padding: 5px;
             }
 
             .locked-door {
-                width: 48vw; /* 20% smaller */
-                height: 67.2vw; /* 20% smaller */
-                max-width: 144px; /* Adjusted max size */
-                max-height: 201.6px; /* Adjusted max size */
+                width: 48vw;
+                height: 67.2vw;
+                max-width: 144px;
+                max-height: 201.6px;
             }
 
             .code-slots {
@@ -605,7 +706,7 @@
             .symbol-palette {
                 gap: 2.5vw;
                 padding: 2.5vw;
-                max-width: 160px; /* Further reduced max-width */
+                max-width: 160px;
             }
 
             .symbol-icon {
@@ -629,34 +730,34 @@
             }
         }
 
-        @media (orientation: landscape) and (max-height: 500px) { /* Landscape mode for small height devices */
+        @media (orientation: landscape) and (max-height: 500px) {
             .puzzle-layout {
                 flex-direction: row;
-                gap: 1.5vw; /* Reduced gap for landscape */
-                padding: 0.8vw; /* Reduced padding */
+                gap: 1.5vw;
+                padding: 0.8vw;
                 align-items: center;
             }
 
             .door-area, .symbol-area {
-                max-width: 40vw; /* Adjusted max width for landscape */
+                max-width: 40vw;
                 min-width: unset;
                 width: auto;
             }
 
             .locked-door {
-                width: 18vw; /* Smaller door in landscape */
+                width: 18vw;
                 height: 25.2vw;
                 max-width: 180px;
                 max-height: 252px;
             }
 
             .code-slots {
-                gap: 0.6vw; /* Reduced gap */
+                gap: 0.6vw;
                 margin-top: 0.8vw;
             }
 
             .slot {
-                width: 3.5vw; /* Smaller slots */
+                width: 3.5vw;
                 height: 3.5vw;
                 max-width: 35px;
                 max-height: 35px;
@@ -664,13 +765,13 @@
 
             .symbol-palette {
                 grid-template-columns: repeat(4, 1fr);
-                gap: 0.8vw; /* Reduced gap */
+                gap: 0.8vw;
                 padding: 0.8vw;
-                max-width: 250px; /* Adjusted max-width */
+                max-width: 250px;
             }
 
             .symbol-icon {
-                width: 3.5vw; /* Smaller symbols */
+                width: 3.5vw;
                 height: 3.5vw;
                 max-width: 35px;
                 max-height: 35px;
@@ -682,18 +783,13 @@
             }
 
             .puzzle-btn {
-                padding: 0.8vw 1.8vw; /* Adjusted padding */
-                font-size: clamp(0.7rem, 1.2vw, 0.9rem); /* Adjusted font size */
+                padding: 0.8vw 1.8vw;
+                font-size: clamp(0.7rem, 1.2vw, 0.9rem);
             }
 
             .symbol-area h2 {
-                font-size: clamp(1rem, 2vw, 1.8rem); /* Adjusted title size */
+                font-size: clamp(1rem, 2vw, 1.8rem);
             }
-        }
-
-        /* Note Scene */
-        #note-scene {
-            background: rgba(0,0,0,0.5);
         }
 
         /* Note Scene */
@@ -702,7 +798,7 @@
         }
 
         .note-paper {
-            background: #fdf5e6; /* Parchment color */
+            background: #fdf5e6;
             width: 90%;
             max-width: 600px;
             padding: 40px;
@@ -717,7 +813,7 @@
         }
 
         .note-paper h2 {
-             color: #8b4513;
+            color: #8b4513;
         }
 
         /* Message Modal */
@@ -757,6 +853,29 @@
     </style>
 </head>
 <body>
+    <!-- Progress indicator — shown after password is accepted -->
+    <div id="progress-indicator">🔓 0 of 10 doors unlocked</div>
+
+    <!-- Restart button — subtle, top-left, shown after password accepted -->
+    <button id="restart-btn" title="Restart game">
+        <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+    </button>
+
+    <!-- DEV: Hidden auto-solve button — bottom-left corner, completely invisible.
+         Tap it to instantly solve the current puzzle. Use during testing to skip through quickly. -->
+    <button id="dev-solve-btn" title=""></button>
+
+    <!-- Two-step restart confirmation modal -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content confirm-content">
+            <p id="confirm-text"></p>
+            <div class="confirm-buttons">
+                <button id="confirm-yes-btn" class="puzzle-btn">Yes, restart</button>
+                <button id="confirm-no-btn" class="puzzle-btn confirm-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <div id="password-screen" class="scene active">
         <h1>Enter Password</h1>
         <input type="password" id="password-input" placeholder="Password">
@@ -776,22 +895,20 @@
 
             <!-- Ending sequence buttons -->
             <div id="ending-yes-no-buttons" style="display: none; position: absolute; top: 70%; left: 50%; transform: translateX(-50%); gap: 20px;">
-                <button id="ending-yes-btn" class="puzzle-btn">Yes</button>
-                <button id="ending-no-btn" class="puzzle-btn">No</button>
+                <button id="ending-yes-btn" class="puzzle-btn">End game</button>
+                <button id="ending-no-btn" class="puzzle-btn">We're not done yet!</button>
             </div>
 
             <div id="ending-continue-button" style="display: none; position: absolute; top: 70%; left: 50%; transform: translateX(-50%);">
-                <button id="ending-continue-btn" class="puzzle-btn">Continue</button>
+                <button id="ending-continue-btn" class="puzzle-btn">What about my prize?</button>
             </div>
 
-            <!-- New Hint Element -->
             <div id="puzzle-nav-hint" class="nav-hint">
                 <span class="hint-text">Click here to see the door</span>
                 <span class="hint-arrow">→</span>
             </div>
 
             <div id="nav-to-puzzle" class="nav-icon" title="Go to the Locked Door">
-                <!-- Door Icon SVG -->
                 <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-2 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm4-8h-8V4h8v6z"></path></svg>
             </div>
         </div>
@@ -801,7 +918,7 @@
             <div class="puzzle-layout">
                 <div class="door-area">
                     <div id="locked-door-container" class="locked-door">
-                        <!-- The specific door SVG will be injected here -->
+                        <!-- Door SVG injected here -->
                     </div>
                     <div class="code-slots">
                         <div class="slot" data-slot-index="0"></div>
@@ -812,9 +929,11 @@
                 </div>
                 <div class="symbol-area">
                     <h2>Symbols of Power</h2>
-                    <p style="margin: 0; font-size: 0.9rem;">(Drag symbols to the slots below the door)</p>
+                    <p style="margin: 0; font-size: 1rem; color: var(--light-text);">
+                        Drag symbols into the slots — the small number is the symbol's code position
+                    </p>
                     <div id="symbol-palette-container" class="symbol-palette">
-                        <!-- Symbol palette will be generated here -->
+                        <!-- Symbol palette generated here -->
                     </div>
                     <div class="puzzle-controls">
                         <button id="clear-btn" class="puzzle-btn">Clear</button>
@@ -823,27 +942,25 @@
                 </div>
             </div>
 
-            <!-- New Hint Element for Crystal Ball Nav -->
             <div id="crystal-ball-nav-hint" class="nav-hint">
                 <span class="hint-text">Click here to return to the crystal ball</span>
                 <span class="hint-arrow">→</span>
             </div>
 
             <div id="nav-to-crystal-ball" class="nav-icon" title="Return to the Crystal Ball">
-                <!-- Crystal Ball Icon SVG -->
                 <svg viewBox="0 0 512 512"><path d="M256 128c-70.69 0-128 57.31-128 128s57.31 128 128 128 128-57.31 128-128-57.31-128-128-128zm0 224c-52.94 0-96-43.06-96-96s43.06-96 96-96 96 43.06 96 96-43.06 96-96 96zM256 32C132.3 32 32 132.3 32 256s100.3 224 224 224 224-100.3 224-224S379.7 32 256 32zm0 416c-105.87 0-192-86.13-192-192S150.13 64 256 64s192 86.13 192 192-86.13 192-192 192z"></path></svg>
             </div>
         </div>
-        
+
         <!-- SCENE 3: THE FINAL NOTE -->
         <div id="note-scene" class="scene">
             <div class="note-paper">
                 <h2>A Secret Note for the Seeker!</h2>
-                <p>Congratulations, Lily! You have proven your wisdom and solved all the mysteries of the Birthday Quest. To recieve your gift... 
-                <p></p>
+                <p>Congratulations, Lincoln! You have proven your wisdom and solved all the mysteries of the Birthday Quest. To receive your gift...</p>
+                <!-- Dean: fill in the gift location below -->
+                <p id="note-gift-location"></p>
             </div>
-             <div id="nav-to-crystal-ball-from-note" class="nav-icon" title="Return to the Crystal Ball">
-                <!-- Crystal Ball Icon SVG -->
+            <div id="nav-to-crystal-ball-from-note" class="nav-icon" title="Return to the Crystal Ball">
                 <svg viewBox="0 0 512 512"><path d="M256 128c-70.69 0-128 57.31-128 128s57.31 128 128 128 128-57.31 128-128-57.31-128-128-128zm0 224c-52.94 0-96-43.06-96-96s43.06-96 96-96 96 43.06 96 96-43.06 96-96 96zM256 32C132.3 32 32 132.3 32 256s100.3 224 224 224 224-100.3 224-224S379.7 32 256 32zm0 416c-105.87 0-192-86.13-192-192S150.13 64 256 64s192 86.13 192 192-86.13 192-192 192z"></path></svg>
             </div>
         </div>
@@ -855,7 +972,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- MODAL for messages -->
     <div id="message-modal" class="modal">
         <div id="modal-content" class="modal-content">
@@ -863,472 +980,475 @@
         </div>
     </div>
 
-
     <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-        // --- GAME CONFIGURATION ---
-        // This is where you can easily change game data.
-        // Dean: You can change the audio paths here. I've used placeholder paths.
-        // You would need to create an 'audio' folder next to this HTML file and place your mp3s inside it.
-        // The SVGs are generated directly in the code, but you could replace them with image paths too.
-        
+        // =====================================================================
+        // GAME CONFIGURATION
+        // Dean: the codes below are what to print and hide at each location.
+        //
+        //   Door 1:  2468      Door 6:  5813
+        //   Door 2:  7351      Door 7:  3175
+        //   Door 3:  4812      Door 8:  6284
+        //   Door 4:  6237      Door 9:  7182
+        //   Door 5:  1584      Door 10: 4861
+        //
+        // =====================================================================
         const puzzleData = [
-            // AI-generated codes: 3715, 8241, 6173, 4826, 1538, 7462, 2814, 5367, 8152, 3628
             {
-                puzzleId: 1,
-                audioClueFile: 'audio/Clue1.mp3',
-                correctCode: '3715',
+                puzzleId: 1, audioClueFile: 'audio/Clue1.mp3', correctCode: '2468',
                 lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`,
-                symbolPalette: generateSymbols(0) // Generate 8 unique symbols for this puzzle
+                symbolPalette: generateSymbols(0)
             },
             {
-                puzzleId: 2,
-                audioClueFile: 'audio/Clue2.mp3',
-                correctCode: '8241',
+                puzzleId: 2, audioClueFile: 'audio/Clue2.mp3', correctCode: '7351',
                 lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10"/><rect x="45" y="60" width="10" height="20" fill="#333"/><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`,
                 symbolPalette: generateSymbols(1)
             },
             {
-                puzzleId: 3,
-                audioClueFile: 'audio/Clue3.mp3',
-                correctCode: '6173',
+                puzzleId: 3, audioClueFile: 'audio/Clue3.mp3', correctCode: '4812',
                 lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><path d="M 20 20 L 80 120 M 80 20 L 20 120" stroke="#f7d716" stroke-width="4"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`,
                 symbolPalette: generateSymbols(2)
             },
-            // ... Add all 10 puzzles
-            { puzzleId: 4, audioClueFile: 'audio/Clue4.mp3', correctCode: '4826', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10"/><rect x="20" y="20" width="60" height="100" stroke="#333" stroke-width="3" fill="none"/><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`, symbolPalette: generateSymbols(3) },
-            { puzzleId: 5, audioClueFile: 'audio/Clue5.mp3', correctCode: '1538', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><circle cx="50" cy="70" r="20" stroke="#f7d716" stroke-width="4" fill="none"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`, symbolPalette: generateSymbols(4) },
-            { puzzleId: 6, audioClueFile: 'audio/Clue6.mp3', correctCode: '7462', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10"/><path d="M 50 20 L 20 120 L 80 120 Z" stroke="#333" stroke-width="3" fill="#444"/><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`, symbolPalette: generateSymbols(5) },
-            { puzzleId: 7, audioClueFile: 'audio/Clue7.mp3', correctCode: '2814', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><line x1="20" y1="70" x2="80" y2="70" stroke="#f7d716" stroke-width="4"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`, symbolPalette: generateSymbols(6) },
-            { puzzleId: 8, audioClueFile: 'audio/Clue8.mp3', correctCode: '5367', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10"/><rect x="40" y="60" width="20" height="20" fill="#333"/><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`, symbolPalette: generateSymbols(7) },
-            { puzzleId: 9, audioClueFile: 'audio/Clue9.mp3', correctCode: '8152', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><path d="M20,120 C40,80 60,80 80,120" stroke="#f7d716" stroke-width="4" fill="none"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`, symbolPalette: generateSymbols(8) },
-            { puzzleId: 10, audioClueFile: 'audio/Clue10.mp3', correctCode: '3628', lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10" /><circle cx="50" cy="30" r="10" fill="#333" /><circle cx="50" cy="110" r="10" fill="#333" /><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`, symbolPalette: generateSymbols(9) }
+            {
+                puzzleId: 4, audioClueFile: 'audio/Clue4.mp3', correctCode: '6237',
+                lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10"/><rect x="20" y="20" width="60" height="100" stroke="#333" stroke-width="3" fill="none"/><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`,
+                symbolPalette: generateSymbols(3)
+            },
+            {
+                puzzleId: 5, audioClueFile: 'audio/Clue5.mp3', correctCode: '1584',
+                lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><circle cx="50" cy="70" r="20" stroke="#f7d716" stroke-width="4" fill="none"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`,
+                symbolPalette: generateSymbols(4)
+            },
+            {
+                puzzleId: 6, audioClueFile: 'audio/Clue6.mp3', correctCode: '5813',
+                lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10"/><path d="M 50 20 L 20 120 L 80 120 Z" stroke="#333" stroke-width="3" fill="#444"/><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`,
+                symbolPalette: generateSymbols(5)
+            },
+            {
+                puzzleId: 7, audioClueFile: 'audio/Clue7.mp3', correctCode: '3175',
+                lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><line x1="20" y1="70" x2="80" y2="70" stroke="#f7d716" stroke-width="4"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`,
+                symbolPalette: generateSymbols(6)
+            },
+            {
+                puzzleId: 8, audioClueFile: 'audio/Clue8.mp3', correctCode: '6284',
+                lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10"/><rect x="40" y="60" width="20" height="20" fill="#333"/><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`,
+                symbolPalette: generateSymbols(7)
+            },
+            {
+                puzzleId: 9, audioClueFile: 'audio/Clue9.mp3', correctCode: '7182',
+                lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#6B4F3A" stroke="#4a3728" stroke-width="10"/><path d="M20,120 C40,80 60,80 80,120" stroke="#f7d716" stroke-width="4" fill="none"/><circle cx="80" cy="70" r="5" fill="#f7d716"/></svg>`,
+                symbolPalette: generateSymbols(8)
+            },
+            {
+                puzzleId: 10, audioClueFile: 'audio/Clue10.mp3', correctCode: '4861',
+                lockedItemSVG: `<svg viewBox="0 0 100 140"><rect x="5" y="5" width="90" height="130" fill="#715e4e" stroke="#4a3728" stroke-width="10"/><circle cx="50" cy="30" r="10" fill="#333"/><circle cx="50" cy="110" r="10" fill="#333"/><circle cx="80" cy="70" r="5" fill="#ccc"/></svg>`,
+                symbolPalette: generateSymbols(9)
+            }
         ];
 
-        const introAudioFile = 'audio/intro.mp3';
-        const unlockSoundFile = 'audio/unlock.mp3';
-        const errorSoundFile = 'audio/error.mp3';
-        const clickSoundFile = 'audio/click.mp3';
-        const areYouSure1AudioFile = 'audio/are-you-sure1.mp3';
-        const areYouSure2AudioFile = 'audio/are-you-sure2.mp3';
-        const locationAudioFile = 'audio/location.mp3';
+        const introAudioFile          = 'audio/intro.mp3';
+        const unlockSoundFile         = 'audio/unlock.mp3';
+        const clickSoundFile          = 'audio/click.mp3';
+        const areYouSure1AudioFile    = 'audio/are-you-sure1.mp3';
+        const areYouSure2AudioFile    = 'audio/are-you-sure2.mp3';
+        const locationAudioFile       = 'audio/location.mp3';
         const locationRepeatAudioFile = 'audio/location-repeat.mp3';
 
-        // --- GAME STATE ---
-        let currentPuzzleIndex = 0;
-        let userInputCode = [null, null, null, null];
-        let gameCompleted = false;
-        let audioBeforeInterruption = null;
-        let introFinished = false;
-        
-        // Ending sequence state
-        let endingPhase = null; // null, 'phase1', 'phase2', 'phase3', 'phase4', 'final'
+        // =====================================================================
+        // GAME STATE  (persisted via localStorage)
+        // To reset the game, clear localStorage key 'lincolnQuest9_2026'.
+        // =====================================================================
+        const SAVE_KEY = 'lincolnQuest9_2026';
 
-        // --- AUDIO SYSTEM ---
+        let currentPuzzleIndex      = 0;
+        let userInputCode           = [null, null, null, null];
+        let gameCompleted           = false;
+        let audioBeforeInterruption = null;
+        let introFinished           = false;
+        let lastPlayedAudio         = null;
+        let endingPhase             = null; // null | 'phase1'..'phase5' | 'final'
+
+        function saveState() {
+            try {
+                localStorage.setItem(SAVE_KEY, JSON.stringify({
+                    currentPuzzleIndex,
+                    introFinished,
+                    gameCompleted,
+                    endingPhase
+                }));
+            } catch(e) { /* localStorage unavailable — silently ignore */ }
+        }
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(SAVE_KEY);
+                if (!raw) return false;
+                const s = JSON.parse(raw);
+                currentPuzzleIndex = s.currentPuzzleIndex ?? 0;
+                introFinished      = s.introFinished      ?? false;
+                gameCompleted      = s.gameCompleted      ?? false;
+                endingPhase        = s.endingPhase        ?? null;
+                return true;
+            } catch(e) { return false; }
+        }
+
+        // =====================================================================
+        // AUDIO SYSTEM
+        // =====================================================================
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         let analyser = audioContext.createAnalyser();
         analyser.fftSize = 256;
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-        const mainAudio = new Audio();
+        const bufferLength  = analyser.frequencyBinCount;
+        const dataArray     = new Uint8Array(bufferLength);
+        const mainAudio     = new Audio();
         let audioSourceNode;
-        const glowElement = document.querySelector('.crystal-ball-glow');
+        const glowElement   = document.querySelector('.crystal-ball-glow'); // kept for reference, hidden
+        const orbImage      = document.getElementById('crystal-ball-image');
 
         function playAudio(url, onEndedCallback, isInterrupt = false) {
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
+            if (audioContext.state === 'suspended') audioContext.resume();
             mainAudio.src = url;
-            if (!isInterrupt) {
-                // Only update the main audio trackers if it's not an interruption
-                lastPlayedAudio = url; 
-            }
-            
+            if (!isInterrupt) lastPlayedAudio = url;
+
             if (!audioSourceNode) {
                 audioSourceNode = audioContext.createMediaElementSource(mainAudio);
                 audioSourceNode.connect(analyser);
                 analyser.connect(audioContext.destination);
             }
-            
-            mainAudio.play().catch(e => console.error("Audio playback failed:", e));
+
+            mainAudio.play().catch(e => console.error('Audio playback failed:', e));
 
             mainAudio.onended = () => {
                 cancelAnimationFrame(animationFrameId);
-                glowElement.style.transform = 'translate(-50%, -50%) scale(1)';
-                glowElement.style.opacity = '0.7';
+                orbImage.style.filter = 'drop-shadow(0 0 12px rgba(199, 146, 234, 0.5))';
                 if (onEndedCallback) onEndedCallback();
             };
-            
+
             animateGlow();
+        }
+
+        // Silently preload an audio file so it plays without delay
+        function preloadAudio(url) {
+            if (!url) return;
+            const a = new Audio();
+            a.preload = 'auto';
+            a.src = url;
         }
 
         let animationFrameId;
         function animateGlow() {
             animationFrameId = requestAnimationFrame(animateGlow);
             analyser.getByteFrequencyData(dataArray);
-            
+
             let sum = 0;
-            for(let i = 0; i < bufferLength; i++) {
-                sum += dataArray[i];
-            }
+            for (let i = 0; i < bufferLength; i++) sum += dataArray[i];
             const average = sum / bufferLength;
-            // Normalize average based on observed typical max value (e.g., 60)
-            // Normalize average based on observed typical max value (e.g., 60)
-            // Adjusting the range to make oscillation more dramatic and impactful:
-            // Map average from [20, 60] to [0, 1] for more pronounced effect.
-            const normalizedAverage = Math.min(Math.max((average - 20) / 40, 0), 1); 
-            
-            const scale = 1.5 + normalizedAverage * 0; //
-            let opacity = 0.4 + normalizedAverage * 0.4; // Increased opacity range for more impact (from 0.4 to 0.8)
 
-            if (mainAudio.paused) {
-                opacity = 0;
-            }
+            // Map [20, 70] → [0, 1]; glow pulses with audio volume
+            const norm  = Math.min(Math.max((average - 20) / 50, 0), 1);
+            const blur1 = Math.round(12 + norm * 28); // inner glow: 12px → 40px
+            const blur2 = Math.round(20 + norm * 50); // outer glow: 20px → 70px
+            const op1   = 0.5 + norm * 0.5;           // 0.5 → 1.0
+            const op2   = 0.25 + norm * 0.45;          // 0.25 → 0.7
 
-            glowElement.style.transform = `translate(-50%, -50%) scale(${scale})`;
-            glowElement.style.opacity = `${opacity}`;
+            const glowFilter = mainAudio.paused
+                ? 'drop-shadow(0 0 12px rgba(199, 146, 234, 0.5))'
+                : `drop-shadow(0 0 ${blur1}px rgba(199, 146, 234, ${op1})) drop-shadow(0 0 ${blur2}px rgba(199, 146, 234, ${op2}))`;
+
+            orbImage.style.filter = glowFilter;
         }
-        
+
         function playSoundEffect(url) {
             const sound = new Audio(url);
-            sound.play().catch(e => console.log("Sound effect couldn't play. User interaction needed."));
+            sound.play().catch(() => {});
         }
 
-        // --- DOM ELEMENTS ---
-        const passwordScreen = document.getElementById('password-screen');
-        const passwordInput = document.getElementById('password-input');
-        const passwordSubmit = document.getElementById('password-submit');
-        const passwordError = document.getElementById('password-error');
+        // =====================================================================
+        // DOM ELEMENTS
+        // =====================================================================
+        const passwordScreen     = document.getElementById('password-screen');
+        const passwordInput      = document.getElementById('password-input');
+        const passwordSubmit     = document.getElementById('password-submit');
+        const passwordError      = document.getElementById('password-error');
+        const progressIndicator  = document.getElementById('progress-indicator');
 
         const scenes = {
-            passwordScreen: passwordScreen,
-            crystalBall: document.getElementById('crystal-ball-scene'),
-            puzzle: document.getElementById('puzzle-scene'),
-            note: document.getElementById('note-scene'),
+            passwordScreen:      passwordScreen,
+            crystalBall:         document.getElementById('crystal-ball-scene'),
+            puzzle:              document.getElementById('puzzle-scene'),
+            note:                document.getElementById('note-scene'),
             doorUnlockedMessage: document.getElementById('door-unlocked-message-scene')
         };
-        const navToPuzzleBtn = document.getElementById('nav-to-puzzle');
-        const navToCrystalBallBtn = document.getElementById('nav-to-crystal-ball');
-        const navFromNoteBtn = document.getElementById('nav-to-crystal-ball-from-note');
-        const crystalBallActivator = document.getElementById('crystal-ball-activator');
-        const puzzleNavHint = document.getElementById('puzzle-nav-hint'); // New element reference
-        const crystalBallNavHint = document.getElementById('crystal-ball-nav-hint'); // New element reference
-        const doorContainer = document.getElementById('locked-door-container');
-        const symbolPaletteContainer = document.getElementById('symbol-palette-container');
-        const codeSlots = document.querySelectorAll('.slot');
-        const clearBtn = document.getElementById('clear-btn');
-        const unlockBtn = document.getElementById('unlock-btn');
-        const modal = document.getElementById('message-modal');
-        const modalContent = document.getElementById('modal-content');
-        const modalText = document.getElementById('modal-text');
-        const doorUnlockedMessageScene = document.getElementById('door-unlocked-message-scene');
-        const doorUnlockedText = document.getElementById('door-unlocked-text');
 
-        // --- SCENE MANAGEMENT ---
+        const navToPuzzleBtn          = document.getElementById('nav-to-puzzle');
+        const navToCrystalBallBtn     = document.getElementById('nav-to-crystal-ball');
+        const navFromNoteBtn          = document.getElementById('nav-to-crystal-ball-from-note');
+        const crystalBallActivator    = document.getElementById('crystal-ball-activator');
+        const puzzleNavHint           = document.getElementById('puzzle-nav-hint');
+        const crystalBallNavHint      = document.getElementById('crystal-ball-nav-hint');
+        const doorContainer           = document.getElementById('locked-door-container');
+        const symbolPaletteContainer  = document.getElementById('symbol-palette-container');
+        const codeSlots               = document.querySelectorAll('.slot');
+        const clearBtn                = document.getElementById('clear-btn');
+        const unlockBtn               = document.getElementById('unlock-btn');
+        const modal                   = document.getElementById('message-modal');
+        const modalContent            = document.getElementById('modal-content');
+        const modalText               = document.getElementById('modal-text');
+        const doorUnlockedMessageScene= document.getElementById('door-unlocked-message-scene');
+        const doorUnlockedText        = document.getElementById('door-unlocked-text');
+
+        // =====================================================================
+        // SCENE MANAGEMENT
+        // =====================================================================
         function showScene(sceneName) {
             Object.values(scenes).forEach(s => s.classList.remove('active'));
             scenes[sceneName].classList.add('active');
         }
 
-        // --- PUZZLE LOGIC ---
-        function loadPuzzle(index) {
-            if (index >= puzzleData.length) {
-                completeGame();
-                return;
+        function updateProgress() {
+            if (!gameCompleted) {
+                progressIndicator.textContent = `🔓 ${currentPuzzleIndex} of 10 doors unlocked`;
+            } else {
+                progressIndicator.textContent = `✨ All 10 doors unlocked!`;
             }
+        }
+
+        // =====================================================================
+        // PUZZLE LOGIC
+        // =====================================================================
+        function loadPuzzle(index) {
+            if (index >= puzzleData.length) { completeGame(); return; }
+
             const puzzle = puzzleData[index];
             doorContainer.innerHTML = puzzle.lockedItemSVG;
             doorContainer.classList.remove('unlocked');
-            
-            // Populate symbol palette
+
             symbolPaletteContainer.innerHTML = '';
             puzzle.symbolPalette.forEach((symbol, i) => {
                 const symbolEl = document.createElement('div');
                 symbolEl.classList.add('symbol-icon');
                 symbolEl.draggable = true;
-                symbolEl.dataset.symbolId = i + 1; // 1-indexed for the code
+                symbolEl.dataset.symbolId = i + 1; // 1-indexed position = the code digit
                 symbolEl.innerHTML = symbol.svg;
+
+                // Small position label (e.g. "1" through "8") in the corner
+                const numEl = document.createElement('span');
+                numEl.classList.add('symbol-number');
+                numEl.textContent = i + 1;
+                symbolEl.appendChild(numEl);
+
                 symbolPaletteContainer.appendChild(symbolEl);
             });
-            
+
             clearSlots();
             addDragListeners();
+
+            // Silently preload the next clue so it plays without delay
+            if (index + 1 < puzzleData.length) {
+                preloadAudio(puzzleData[index + 1].audioClueFile);
+            }
         }
 
         function clearSlots() {
             userInputCode = [null, null, null, null];
-            codeSlots.forEach(slot => {
-                slot.innerHTML = '';
-            });
+            codeSlots.forEach(slot => { slot.innerHTML = ''; });
             playSoundEffect(clickSoundFile);
         }
 
         function checkCode() {
             const enteredCode = userInputCode.join('');
             const correctCode = puzzleData[currentPuzzleIndex].correctCode;
-            
+
             if (enteredCode === correctCode) {
-                // SUCCESS
-                introFinished = true; // Ensure intro is marked as finished
+                introFinished = true;
                 playSoundEffect(unlockSoundFile);
                 doorContainer.classList.add('unlocked');
-                
+
                 setTimeout(() => {
                     currentPuzzleIndex++;
+                    saveState();
+                    updateProgress();
+
                     if (currentPuzzleIndex >= puzzleData.length) {
                         completeGame();
                     } else {
-                        // Show "Door unlocked!" message in the new scene
                         doorUnlockedText.textContent = 'Door unlocked!';
                         showScene('doorUnlockedMessage');
 
-                        // Add one-time listener for the next message
                         const nextMessageListener = () => {
-                            doorUnlockedMessageScene.removeEventListener('click', nextMessageListener); // Remove self
+                            doorUnlockedMessageScene.removeEventListener('click', nextMessageListener);
                             doorUnlockedText.textContent = 'You find another locked door...';
-                            // After a brief delay, transition to crystal ball and load next puzzle
                             setTimeout(() => {
                                 showScene('crystalBall');
                                 loadPuzzle(currentPuzzleIndex);
-                                playAudio(puzzleData[currentPuzzleIndex].audioClueFile); // Play new clue audio
-                            }, 1000); // Delay before showing crystal ball
+                                playAudio(puzzleData[currentPuzzleIndex].audioClueFile);
+                                saveState();
+                            }, 1000);
                         };
                         doorUnlockedMessageScene.addEventListener('click', nextMessageListener);
                     }
-                }, 1000); // Wait for animation
+                }, 1000);
+
             } else {
-                // FAILURE
-                const randomNopeIndex = Math.floor(Math.random() * 7) + 1; // 1 to 7
+                const randomNopeIndex = Math.floor(Math.random() * 7) + 1;
                 playSoundEffect(`audio/nope${randomNopeIndex}.mp3`);
                 document.querySelector('.puzzle-layout').animate([
-                    { transform: 'translateX(0px)' },
-                    { transform: 'translateX(-10px)' },
-                    { transform: 'translateX(10px)' },
-                    { transform: 'translateX(-10px)' },
-                    { transform: 'translateX(10px)' },
-                    { transform: 'translateX(0px)' }
+                    { transform: 'translateX(0px)'   },
+                    { transform: 'translateX(-10px)'  },
+                    { transform: 'translateX(10px)'   },
+                    { transform: 'translateX(-10px)'  },
+                    { transform: 'translateX(10px)'   },
+                    { transform: 'translateX(0px)'    }
                 ], { duration: 500, iterations: 1 });
             }
         }
 
         function completeGame() {
             gameCompleted = true;
-            endingPhase = 'phase1';
-            showModal('You have solved all the puzzles!', false);
-            
-            // Hide door navigation button since puzzles are complete
+            endingPhase   = 'phase1';
+            saveState();
+            updateProgress();
+
             navToPuzzleBtn.style.display = 'none';
             document.getElementById('puzzle-nav-hint').style.display = 'none';
-            
+
+            showModal('You have solved all the puzzles!', false);
+
             setTimeout(() => {
                 showScene('crystalBall');
-                // Start ending sequence by playing are-you-sure1.mp3
                 playAudio(areYouSure1AudioFile, () => {
-                    // After are-you-sure1.mp3 finishes, show Yes/No buttons
                     endingPhase = 'phase2';
+                    saveState();
                     document.getElementById('ending-yes-no-buttons').style.display = 'flex';
                 });
             }, 1500);
         }
 
-        // --- DRAG AND DROP / TAP TO PLACE ---
-        let draggedSymbol = null;
-        let ghostSymbol = null; // For touch events
-        let selectedSymbol = null; // For tap-to-place functionality
+        // =====================================================================
+        // DRAG AND DROP / TAP TO PLACE
+        // =====================================================================
+        let draggedSymbol  = null;
+        let ghostSymbol    = null;
+        let selectedSymbol = null;
 
         function addDragListeners() {
             const symbols = document.querySelectorAll('.symbol-icon');
             symbols.forEach(symbol => {
-                // Mouse events for drag and drop
-                symbol.addEventListener('dragstart', handleDragStart);
-                symbol.addEventListener('dragend', handleDragEnd);
-
-                // Touch events for drag and drop
+                symbol.addEventListener('dragstart',  handleDragStart);
+                symbol.addEventListener('dragend',    handleDragEnd);
                 symbol.addEventListener('touchstart', handleTouchStart);
-                symbol.addEventListener('touchend', handleTouchEnd);
-
-                // Click/Tap event for tap-to-place
-                symbol.addEventListener('click', handleSymbolTap);
+                symbol.addEventListener('touchend',   handleTouchEnd);
+                symbol.addEventListener('click',      handleSymbolTap);
             });
-
             codeSlots.forEach(slot => {
-                // Mouse events for drag and drop
-                slot.addEventListener('dragover', handleDragOver);
+                slot.addEventListener('dragover',  handleDragOver);
                 slot.addEventListener('dragleave', handleDragLeave);
-                slot.addEventListener('drop', handleDrop);
-
-                // Touch events for drag and drop
+                slot.addEventListener('drop',      handleDrop);
                 slot.addEventListener('touchmove', handleTouchMove);
-
-                // Click/Tap event for tap-to-place
-                slot.addEventListener('click', handleSlotTap);
+                slot.addEventListener('click',     handleSlotTap);
             });
-
-            // Listen for clicks outside symbols/slots to deselect
             document.addEventListener('click', handleOutsideClick);
         }
-        
-        // --- Mouse Drag Handlers ---
+
+        // Mouse drag
         function handleDragStart(e) {
-            // If a symbol is selected for tap-to-place, deselect it when starting a drag
-            if (selectedSymbol) {
-                selectedSymbol.classList.remove('selected');
-                selectedSymbol = null;
-            }
+            if (selectedSymbol) { selectedSymbol.classList.remove('selected'); selectedSymbol = null; }
             draggedSymbol = e.target;
             setTimeout(() => e.target.classList.add('dragging'), 0);
         }
-
-        function handleDragEnd(e) {
-            e.target.classList.remove('dragging');
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault(); // Necessary to allow drop
-            e.target.closest('.slot').classList.add('drag-over');
-        }
-
-        function handleDragLeave(e) {
-            e.target.closest('.slot').classList.remove('drag-over');
-        }
-
+        function handleDragEnd(e)   { e.target.classList.remove('dragging'); }
+        function handleDragOver(e)  { e.preventDefault(); e.target.closest('.slot').classList.add('drag-over'); }
+        function handleDragLeave(e) { e.target.closest('.slot').classList.remove('drag-over'); }
         function handleDrop(e) {
             e.preventDefault();
             const slot = e.target.closest('.slot');
             slot.classList.remove('drag-over');
-            
-            if (draggedSymbol && slot) {
-                placeSymbolInSlot(draggedSymbol, slot);
-            }
+            if (draggedSymbol && slot) placeSymbolInSlot(draggedSymbol, slot);
         }
 
-        // --- Touch Drag Handlers ---
+        // Touch drag
         let touchRAF;
         let currentTouchX, currentTouchY;
 
         function handleTouchStart(e) {
-            // If a symbol is selected for tap-to-place, deselect it when starting a drag
-            if (selectedSymbol) {
-                selectedSymbol.classList.remove('selected');
-                selectedSymbol = null;
-            }
-            // Only proceed with drag if it's a single touch (to avoid interfering with tap)
+            if (selectedSymbol) { selectedSymbol.classList.remove('selected'); selectedSymbol = null; }
             if (e.touches.length === 1) {
                 draggedSymbol = e.target;
                 draggedSymbol.classList.add('dragging');
-
-                // Create a ghost element for visual feedback
                 ghostSymbol = draggedSymbol.cloneNode(true);
-                ghostSymbol.classList.add('dragging'); // Keep the dragging style
-                ghostSymbol.style.position = 'absolute';
-                ghostSymbol.style.zIndex = '1000';
-                ghostSymbol.style.pointerEvents = 'none'; // Ensure it doesn't interfere with touch events
-                ghostSymbol.style.width = draggedSymbol.offsetWidth + 'px';
-                ghostSymbol.style.height = draggedSymbol.offsetHeight + 'px';
+                ghostSymbol.style.cssText = `position:absolute;z-index:1000;pointer-events:none;width:${draggedSymbol.offsetWidth}px;height:${draggedSymbol.offsetHeight}px;`;
                 document.body.appendChild(ghostSymbol);
-
-                // Initial position update
                 currentTouchX = e.touches[0].clientX;
                 currentTouchY = e.touches[0].clientY;
                 requestAnimationFrame(renderGhostPosition);
-
-                // Add global touchmove listener to track finger movement
                 document.addEventListener('touchmove', handleTouchMove, { passive: false });
             }
         }
 
         function handleTouchMove(e) {
-            e.preventDefault(); // Prevent scrolling while dragging
+            e.preventDefault();
             const touch = e.touches[0];
             currentTouchX = touch.clientX;
             currentTouchY = touch.clientY;
-
-            if (!touchRAF) { // Only request a new frame if one isn't already pending
-                touchRAF = requestAnimationFrame(renderGhostPosition);
-            }
-
-            // Check for slot hover (drag-over effect) - this can be done directly as it's not visual position update
+            if (!touchRAF) touchRAF = requestAnimationFrame(renderGhostPosition);
             const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
             codeSlots.forEach(slot => {
-                if (slot.contains(targetElement) && !slot.classList.contains('drag-over')) {
-                    slot.classList.add('drag-over');
-                } else if (!slot.contains(targetElement) && slot.classList.contains('drag-over')) {
-                    slot.classList.remove('drag-over');
-                }
+                if (slot.contains(targetElement)) slot.classList.add('drag-over');
+                else                              slot.classList.remove('drag-over');
             });
         }
 
         function renderGhostPosition() {
             if (ghostSymbol) {
-                ghostSymbol.style.left = currentTouchX - ghostSymbol.offsetWidth / 2 + 'px';
-                ghostSymbol.style.top = currentTouchY - ghostSymbol.offsetHeight / 2 + 'px';
+                ghostSymbol.style.left = currentTouchX - ghostSymbol.offsetWidth  / 2 + 'px';
+                ghostSymbol.style.top  = currentTouchY - ghostSymbol.offsetHeight / 2 + 'px';
             }
-            touchRAF = null; // Clear the pending frame request
+            touchRAF = null;
         }
 
         function handleTouchEnd(e) {
-            if (draggedSymbol) { // Only if a drag was actually initiated
-                draggedSymbol.classList.remove('dragging');
-                document.removeEventListener('touchmove', handleTouchMove);
-                cancelAnimationFrame(touchRAF); // Cancel any pending animation frame
-                touchRAF = null;
-
-                if (ghostSymbol) {
-                    ghostSymbol.remove();
-                    ghostSymbol = null;
-                }
-
-                const touch = e.changedTouches[0];
-                const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
-                const slot = targetElement ? targetElement.closest('.slot') : null;
-
-                if (slot) {
-                    slot.classList.remove('drag-over');
-                    placeSymbolInSlot(draggedSymbol, slot);
-                }
-                draggedSymbol = null; // Reset dragged symbol
-            }
+            if (!draggedSymbol) return;
+            draggedSymbol.classList.remove('dragging');
+            document.removeEventListener('touchmove', handleTouchMove);
+            cancelAnimationFrame(touchRAF);
+            touchRAF = null;
+            if (ghostSymbol) { ghostSymbol.remove(); ghostSymbol = null; }
+            const touch = e.changedTouches[0];
+            const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
+            const slot = targetEl ? targetEl.closest('.slot') : null;
+            if (slot) { slot.classList.remove('drag-over'); placeSymbolInSlot(draggedSymbol, slot); }
+            draggedSymbol = null;
         }
 
-        // --- Tap-to-Place Handlers ---
+        // Tap-to-place
         function handleSymbolTap(e) {
-            const tappedSymbol = e.currentTarget; // Use currentTarget as event listener is on the symbol itself
-
-            if (selectedSymbol === tappedSymbol) {
-                // If the same symbol is tapped again, deselect it
+            const tapped = e.currentTarget;
+            if (selectedSymbol === tapped) {
                 selectedSymbol.classList.remove('selected');
                 selectedSymbol = null;
             } else {
-                // Deselect any previously selected symbol
-                if (selectedSymbol) {
-                    selectedSymbol.classList.remove('selected');
-                }
-                // Select the new symbol
-                selectedSymbol = tappedSymbol;
+                if (selectedSymbol) selectedSymbol.classList.remove('selected');
+                selectedSymbol = tapped;
                 selectedSymbol.classList.add('selected');
             }
             playSoundEffect(clickSoundFile);
         }
 
         function handleSlotTap(e) {
-            const tappedSlot = e.currentTarget; // Use currentTarget as event listener is on the slot itself
-
+            const tappedSlot = e.currentTarget;
             if (selectedSymbol) {
-                // If a symbol is selected, place it in this slot
                 placeSymbolInSlot(selectedSymbol, tappedSlot);
                 selectedSymbol.classList.remove('selected');
-                selectedSymbol = null; // Deselect after placing
+                selectedSymbol = null;
             }
             playSoundEffect(clickSoundFile);
         }
 
         function handleOutsideClick(e) {
-            // If click is outside a symbol-icon or slot, deselect current symbol
-            const isSymbol = e.target.closest('.symbol-icon');
-            const isSlot = e.target.closest('.slot');
-            const isClearBtn = e.target.id === 'clear-btn'; // Check if clear button was clicked
-
+            const isSymbol   = e.target.closest('.symbol-icon');
+            const isSlot     = e.target.closest('.slot');
+            const isClearBtn = e.target.id === 'clear-btn';
             if (selectedSymbol && !isSymbol && !isSlot && !isClearBtn) {
                 selectedSymbol.classList.remove('selected');
                 selectedSymbol = null;
@@ -1338,31 +1458,25 @@
         function placeSymbolInSlot(symbol, slot) {
             playSoundEffect(clickSoundFile);
             const slotIndex = parseInt(slot.dataset.slotIndex);
-            // Clear previous symbol if any
-            slot.innerHTML = '';
-            // Clone the symbol to drop it in
-            const clonedSymbol = symbol.cloneNode(true);
-            clonedSymbol.classList.remove('dragging');
-            clonedSymbol.classList.remove('selected'); // Remove selected class from the cloned symbol
-            clonedSymbol.draggable = false; // Not draggable once placed
-            slot.appendChild(clonedSymbol);
-            
-            // Store the code
+            slot.innerHTML   = '';
+            const cloned = symbol.cloneNode(true);
+            cloned.classList.remove('dragging', 'selected');
+            cloned.draggable = false;
+            slot.appendChild(cloned);
             userInputCode[slotIndex] = symbol.dataset.symbolId;
         }
 
-        // --- UTILITY & INIT ---
+        // =====================================================================
+        // UTILITY
+        // =====================================================================
         function showModal(text, isError) {
             modalText.textContent = text;
             modalContent.classList.toggle('error', isError);
             modal.classList.add('visible');
         }
-        
+
         function generateSymbols(seed) {
-            // Generates 8 deterministic "random" symbols for a puzzle
-            // This ensures each puzzle has a unique but consistent set of symbols
             const symbolSVGs = [
-                // Set 1: Basic shapes
                 `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
                 `<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
                 `<svg viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
@@ -1371,7 +1485,6 @@
                 `<svg viewBox="0 0 100 100"><path d="M20,80 Q50,10 80,80" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
                 `<svg viewBox="0 0 100 100"><path d="M50 10 V 90 L 90 50" stroke="currentColor" stroke-width="8" fill="none"/></svg>`,
                 `<svg viewBox="0 0 100 100"><path d="M15,15 h70 v70 h-70 z m15,15 h40 v40 h-40 z" stroke="currentColor" stroke-width="4" fill="currentColor"/></svg>`,
-                // Set 2: "Magical" shapes
                 `<svg viewBox="0 0 100 100"><path d="M50 2l11 22 24 4-18 18 4 24-22-11-22 11 4-24-18-18 24-4z" stroke="currentColor" stroke-width="4" fill="none"/></svg>`,
                 `<svg viewBox="0 0 100 100"><path d="M25 75 A 40 40 0 0 1 75 25" stroke="currentColor" stroke-width="8" fill="none"/><circle cx="75" cy="25" r="10" fill="currentColor"/></svg>`,
                 `<svg viewBox="0 0 100 100"><path d="M10 50 C 40 10, 60 10, 90 50 S 60 90, 10 50" stroke="currentColor" stroke-width="6" fill="none"/></svg>`,
@@ -1381,9 +1494,8 @@
                 `<svg viewBox="0 0 100 100"><path d="M20,50 L50,20 L80,50 L50,80 Z" stroke="currentColor" stroke-width="8" fill="currentColor"/></svg>`,
                 `<svg viewBox="0 0 100 100"><path d="M50 20 C 80 20, 80 80, 50 80 C 20 80, 20 20, 50 20 M 50 30 C 70 30, 70 70, 50 70 C 30 70, 30 30, 50 30" stroke="currentColor" stroke-width="4" fill="none"/></svg>`,
             ];
-
             const result = [];
-            const startIndex = (seed * 3) % symbolSVGs.length; // Create variance
+            const startIndex = (seed * 3) % symbolSVGs.length;
             for (let i = 0; i < 8; i++) {
                 const index = (startIndex + i * 2) % symbolSVGs.length;
                 result.push({ id: `p${seed}_s${i+1}`, svg: symbolSVGs[index] });
@@ -1391,125 +1503,244 @@
             return result;
         }
 
+        // =====================================================================
+        // RESTART LOGIC
+        // =====================================================================
+        const restartBtn   = document.getElementById('restart-btn');
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmText  = document.getElementById('confirm-text');
+        const confirmYes   = document.getElementById('confirm-yes-btn');
+        const confirmNo    = document.getElementById('confirm-no-btn');
+
+        let confirmStep = 0;
+
+        function showConfirmModal(step) {
+            confirmStep = step;
+            if (step === 1) {
+                confirmText.textContent = 'Are you sure you want to restart? All progress will be lost.';
+                confirmYes.textContent  = 'Yes, restart';
+            } else {
+                confirmText.textContent = 'Are you REALLY sure? This cannot be undone!';
+                confirmYes.textContent  = 'YES — RESTART!';
+            }
+            confirmModal.classList.add('visible');
+        }
+
+        function doRestart() {
+            confirmModal.classList.remove('visible');
+            confirmStep = 0;
+
+            // Clear saved state
+            try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
+
+            // Reset all state variables
+            currentPuzzleIndex      = 0;
+            userInputCode           = [null, null, null, null];
+            gameCompleted           = false;
+            audioBeforeInterruption = null;
+            introFinished           = false;
+            lastPlayedAudio         = null;
+            endingPhase             = null;
+
+            // Stop any audio
+            mainAudio.pause();
+            mainAudio.src = '';
+            cancelAnimationFrame(animationFrameId);
+            glowElement.style.transform = 'translate(-50%, -50%) scale(1)';
+            glowElement.style.opacity   = '0.3';
+
+            // Reset UI elements that may have been hidden/shown during the game
+            navToPuzzleBtn.style.display = '';
+            document.getElementById('puzzle-nav-hint').style.display   = '';
+            document.getElementById('ending-yes-no-buttons').style.display  = 'none';
+            document.getElementById('ending-continue-button').style.display = 'none';
+
+            updateProgress();
+            loadPuzzle(0);
+            showScene('crystalBall');
+            showModal('Game restarted. Ready when you are, Lincoln!', false);
+        }
+
+        restartBtn.addEventListener('click', () => showConfirmModal(1));
+
+        confirmNo.addEventListener('click', () => {
+            confirmModal.classList.remove('visible');
+            confirmStep = 0;
+        });
+
+        confirmYes.addEventListener('click', () => {
+            if (confirmStep === 1) {
+                showConfirmModal(2);
+            } else {
+                doRestart();
+            }
+        });
+
+        // =====================================================================
+        // DEV: AUTO-SOLVE  (hidden button — bottom-left corner)
+        // Tap to instantly solve the current puzzle. Tap repeatedly to skip through all 10.
+        // =====================================================================
+        document.getElementById('dev-solve-btn').addEventListener('click', () => {
+            if (gameCompleted) return;
+
+            // Make sure we're on the puzzle scene so the unlock animation plays
+            showScene('puzzle');
+
+            const puzzle      = puzzleData[currentPuzzleIndex];
+            const correctCode = puzzle.correctCode;
+
+            // Fill each slot with the correct symbol visually
+            correctCode.split('').forEach((digit, slotIndex) => {
+                const symbolIndex = parseInt(digit) - 1;
+                const symbol      = puzzle.symbolPalette[symbolIndex];
+                const slot        = codeSlots[slotIndex];
+                slot.innerHTML = '';
+                const symbolEl = document.createElement('div');
+                symbolEl.classList.add('symbol-icon');
+                symbolEl.dataset.symbolId = digit;
+                symbolEl.innerHTML = symbol.svg;
+                symbolEl.draggable = false;
+                slot.appendChild(symbolEl);
+                userInputCode[slotIndex] = digit;
+            });
+
+            // Short delay so you can see the slots fill before the check fires
+            setTimeout(() => checkCode(), 300);
+        });
+
+        // =====================================================================
+        // INIT
+        // =====================================================================
         function init() {
-            // Initial scene is the password screen
             showScene('passwordScreen');
 
-            // Password screen logic
-            passwordSubmit.addEventListener('click', () => {
-                const enteredPassword = passwordInput.value.trim().toLowerCase();
-                const correctPassword = 'eleventoday2025'; // The password is "eleventoday2025"
+            // Allow Enter key on password field
+            passwordInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') passwordSubmit.click();
+            });
 
-                if (enteredPassword === correctPassword) {
-                    passwordError.textContent = ''; // Clear any previous error
-                    showScene('crystalBall'); // Show the main game scene
-                    // Proceed with the original game initialization
-                    showModal('Happy birthday Lily! This is your birthday quest.', false);
-                    loadPuzzle(0);
+            passwordSubmit.addEventListener('click', () => {
+                const entered = passwordInput.value.trim().toLowerCase();
+                const correct = 'ninetoday2026';
+
+                if (entered === correct) {
+                    passwordError.textContent = '';
+
+                    const hasSave = loadState(); // Restore progress if any
+
+                    showScene('crystalBall');
+                    progressIndicator.style.display = 'block';
+                    restartBtn.style.display = 'flex';
+                    updateProgress();
+                    loadPuzzle(currentPuzzleIndex);
+
+                    // Restore any mid-ending UI state
+                    if (gameCompleted) {
+                        navToPuzzleBtn.style.display = 'none';
+                        document.getElementById('puzzle-nav-hint').style.display = 'none';
+                        if (endingPhase === 'phase2') {
+                            document.getElementById('ending-yes-no-buttons').style.display = 'flex';
+                        } else if (endingPhase === 'phase4') {
+                            document.getElementById('ending-continue-button').style.display = 'block';
+                        }
+                    }
+
+                    if (hasSave && currentPuzzleIndex > 0) {
+                        showModal(`Welcome back, Lincoln! You have unlocked ${currentPuzzleIndex} of 10 doors.`, false);
+                    } else {
+                        showModal('Happy Birthday Lincoln! This is your Birthday Quest.', false);
+                    }
+
                 } else {
                     passwordError.textContent = 'Incorrect password. Try again.';
-                    passwordInput.value = ''; // Clear input
+                    passwordInput.value = '';
                 }
             });
 
-            // Navigation listeners
+            // Navigation
             navToPuzzleBtn.addEventListener('click', () => {
-                 if (gameCompleted) {
-                    showScene('note');
-                } else {
-                    showScene('puzzle');
-                }
-                // Hide the hint after the first click
-                if (puzzleNavHint) {
-                    puzzleNavHint.classList.add('hidden');
-                }
+                if (gameCompleted) showScene('note');
+                else               showScene('puzzle');
+                if (puzzleNavHint) puzzleNavHint.classList.add('hidden');
             });
+
             navToCrystalBallBtn.addEventListener('click', () => {
                 showScene('crystalBall');
-                // Hide the hint after the first click
-                if (crystalBallNavHint) {
-                    crystalBallNavHint.classList.add('hidden');
-                }
+                if (crystalBallNavHint) crystalBallNavHint.classList.add('hidden');
             });
+
             navFromNoteBtn.addEventListener('click', () => showScene('crystalBall'));
 
-            // Game action listeners
+            // Crystal ball tap
             crystalBallActivator.addEventListener('click', () => {
-                // Handle ending sequence phases first
                 if (gameCompleted) {
-                    if (endingPhase === 'final') {
-                        playAudio(locationRepeatAudioFile);
-                    }
-                    // During other ending phases, clicks do nothing.
+                    if (endingPhase === 'final') playAudio(locationRepeatAudioFile);
                     return;
                 }
 
                 const isPlaying = !mainAudio.paused && !mainAudio.ended && mainAudio.currentTime > 0;
 
                 if (isPlaying) {
-                    // 1. Interrupt playing audio
                     mainAudio.pause();
-                    // We need to store the actual src, not just the last played clue file
-                    audioBeforeInterruption = mainAudio.src; 
-                    const randomCoughIndex = Math.floor(Math.random() * 4) + 1;
-                    playAudio(`audio/cough${randomCoughIndex}.mp3`, null, true); // Pass true for isInterrupt
+                    audioBeforeInterruption = mainAudio.src;
+                    const coughIndex = Math.floor(Math.random() * 4) + 1;
+                    playAudio(`audio/cough${coughIndex}.mp3`, null, true);
                 } else if (audioBeforeInterruption) {
-                    // 2. Resume interrupted audio
                     playAudio(audioBeforeInterruption);
                     audioBeforeInterruption = null;
                 } else if (!introFinished) {
-                    // 3. Play intro for the first time
                     playAudio(introAudioFile, () => {
                         introFinished = true;
+                        saveState();
                     });
                 } else {
-                    // 4. Play the current puzzle's clue
                     playAudio(puzzleData[currentPuzzleIndex].audioClueFile);
                 }
             });
+
             clearBtn.addEventListener('click', clearSlots);
             unlockBtn.addEventListener('click', checkCode);
 
-            // Ending sequence button listeners
+            // Ending sequence
             document.getElementById('ending-yes-btn').addEventListener('click', () => {
-                // Hide Yes/No buttons and play are-you-sure-2.mp3
                 document.getElementById('ending-yes-no-buttons').style.display = 'none';
                 endingPhase = 'phase3';
+                saveState();
                 playAudio(areYouSure2AudioFile, () => {
-                    // After are-you-sure-2.mp3 finishes, show Continue button
                     endingPhase = 'phase4';
+                    saveState();
                     document.getElementById('ending-continue-button').style.display = 'block';
                 });
             });
 
             document.getElementById('ending-no-btn').addEventListener('click', () => {
-                // Hide Yes/No buttons and play are-you-sure-2.mp3
                 document.getElementById('ending-yes-no-buttons').style.display = 'none';
                 endingPhase = 'phase3';
+                saveState();
                 playAudio(areYouSure2AudioFile, () => {
-                    // After are-you-sure-2.mp3 finishes, show Continue button
                     endingPhase = 'phase4';
+                    saveState();
                     document.getElementById('ending-continue-button').style.display = 'block';
                 });
             });
 
             document.getElementById('ending-continue-btn').addEventListener('click', () => {
-                // Hide Continue button and play location.mp3
                 document.getElementById('ending-continue-button').style.display = 'none';
                 endingPhase = 'phase5';
+                saveState();
                 playAudio(locationAudioFile, () => {
-                    // After location.mp3 finishes, set to final phase
                     endingPhase = 'final';
+                    saveState();
                 });
             });
 
-            // Hide modal on click/touch (This listener should only be active AFTER password is correct)
+            // Dismiss modal — and play intro if first time
             modal.addEventListener('click', () => {
                 modal.classList.remove('visible');
-                // Play intro audio when modal is dismissed, ONLY if intro hasn't played yet.
                 if (!introFinished) {
                     playAudio(introAudioFile, () => {
                         introFinished = true;
+                        saveState();
                     });
                 }
             });

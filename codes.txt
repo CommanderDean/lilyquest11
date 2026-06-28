@@ -1,12 +1,14 @@
-Secret Codes:
+Secret Codes for Lincoln's Quest (9th Birthday, 2026):
 
-    3715
-    8241
-    6173
-    4826
-    1538
-    7462
-    2814
-    5367
-    8152
-    3628
+    Door 1:  2468
+    Door 2:  7351
+    Door 3:  4812
+    Door 4:  6237
+    Door 5:  1584
+    Door 6:  5813
+    Door 7:  3175
+    Door 8:  6284
+    Door 9:  7182
+    Door 10: 4861
+
+Print each code on a small slip of paper and hide it at the matching location.

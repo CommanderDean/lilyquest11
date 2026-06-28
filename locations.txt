@@ -1,48 +1,159 @@
-Dog with pumpkins and a witches hat in the month of Halloween
+Locations for Lincoln's Quest (9th Birthday, 2026)
+==================================================
 
-Behind an ancient Japanese shrine in the snow 
+Hiding Spots & Audio Scripts
+-----------------------------
 
-On the back of a robot near the on off switch
+1. Under blue pot plant at top of inside stairs
+   Code: 2468
 
-Under the place where a boy keeps his books to read beside the toilet
-
-Under the sandpit in Maisie's house
-
-Behind the mirror where dad checks the pipes. 
-
-Inside a small pumpkin with a smile
-
-Under the bird house
-
-On the red dragon in Dragon Wood
-
-Under the golden buddah
+   Clue 1 (Clue1.mp3):
+   "Seek the vessel of deepest blue, standing guard at the summit of the inner steps.
+   Lift it, young seeker, and claim what lies beneath."
 
 
+2. Inside towel cupboard at the bottom of the stairs (where Lincoln likes to hide)
+   Code: 7351
 
-Script:
-
-"Greetings, young quest-seeker! Today, on your special birthday, a grand challenge awaits! Touch this Crystal Ball to hear the first riddle, which will guide you through the ten magical doors standing between you and your birthday prize! Are you ready?"
-
-[cough]
-
-"hmm?"
-
-"oh..."
-
-"pardon"
-
-"uh"
+   Clue 2 (Clue2.mp3):
+   "You know this hiding place well, Lincoln — for you yourself have sheltered here among
+   the towels. Go now to the cupboard at the foot of the stairs. Your next secret awaits within."
 
 
-1 "First you must seek a dog wearing a witches hat, surrounded by pumpkins, in the spooky month of Halloween."
-2 "Find the secret behind an ancient Japanese shrine, nestled amidst the snow, on a door to the cold."
-3 "Upon the mighty robot's back, near the very spark of its life – the on off switch."
-4 "Discover the hidden truth under the place where a boy keeps his books to read, close by the quiet contemplation of the ceramic throne."
-5 "Uncover the mystery under the sandpit in Maisie's house, where grains of magic reside."
-6 "Gaze behind the mirror where the Father checks the pipes, revealing reflections of hidden paths."
-7 "Journey inside a small pumpkin with a smile, for it holds a joyful secret."
-8 "Find the treasure under the bird house, beneath the dwelling of winged wonders."
-9 "Seek the red dragon in Dragon Wood, for the code lies on its majestic form." done
-10 "Unearth the wisdom under the golden buddha, a beacon of serene truth." done
+3. Inside a Poké Ball
+   Code: 4812
 
+   Clue 3 (Clue3.mp3):
+   "The great orb of red and white — a magical sphere said to hold creatures of extraordinary
+   power. Open it... and you shall find your next clue."
+
+
+4. Lego Ninjago book — on the page about Jungle Kai
+   Code: 6237
+
+   Clue 4 (Clue4.mp3):
+   "Seek out the great tome that names and chronicles the warriors of Ninjago. Turn its pages,
+   young seeker, until you find the jungle warrior — Kai himself. There, your next code lies hidden."
+
+
+5. On a skateboard
+   Code: 1584
+
+   Clue 5 (Clue5.mp3):
+   "The brave and the bold glide through the streets upon four wheels. Find this trusty board
+   and claim the code that rests upon it."
+
+
+6. Inside Spider-Man toothbrush case in the bottom drawer of the upstairs bathroom
+   Code: 5813
+
+   Clue 6 (Clue6.mp3):
+   "In the upper chamber of washing, search the lowest drawer. You will find a case bearing
+   the mark of the great spider warrior. Your clue lies within."
+
+
+7. In a bird box
+   Code: 3175
+
+   Clue 7 (Clue7.mp3):
+   "A small wooden house, built for winged visitors of feather and song. Look inside — for a
+   different kind of visitor has left something there for you."
+
+
+8. Under the table on the verandah
+   Code: 6284
+
+   Clue 8 (Clue8.mp3):
+   "Step beyond the walls to the covered realm outside. Beneath the table upon the verandah,
+   your secret rests in the shadows."
+
+
+9. Under Socrates (made of socks)
+   Code: 7182
+
+   Clue 9 (Clue9.mp3):
+   "Seek the curious creature born not of flesh and bone, but of the humble sock. He bears the
+   name of a great thinker from the ancient world. Look beneath him, and you shall find your prize."
+
+
+10. On a trumpet
+    Code: 4861
+
+    Clue 10 (Clue10.mp3):
+    "The brass voice of music calls out across the realm! Find the mighty instrument that rings
+    with a single breath — and upon it, your final clue awaits."
+
+
+==================================================
+Ending Sequence Scripts
+==================================================
+
+are-you-sure1.mp3  [plays automatically after the 10th door is solved]
+    "Lincoln... you have done it. All ten doors stand open. You have proven yourself a true
+     quest-seeker. But before I reveal your prize... I must ask. Are you... TRULY... ready?"
+    [Yes / No buttons appear on screen — record silence or a dramatic pause here]
+
+
+are-you-sure2.mp3  [plays when either Yes or No is pressed — must work for both]
+    "...Of course you are! I was going to tell you either way. Now listen carefully, young
+     seeker, for the crystal ball speaks only once..."
+    [Continue button appears on screen]
+
+
+location.mp3  [plays when Continue is pressed — the gift reveal]
+    "Your birthday prize awaits you in your parents' bedroom. But be warned — this treasure
+     is guarded! You will need to call upon the aid of Mum and Dad to help you claim what is
+     rightfully yours. Go now, Lincoln. Your quest is complete. Happy Birthday."
+
+
+location-repeat.mp3  [plays if Lincoln taps the crystal ball again after the ending]
+    "Your prize is in your parents' bedroom, young seeker. Call upon Mum and Dad —
+     they will help you claim it."
+
+
+==================================================
+Reaction Audio Scripts
+==================================================
+
+Intro (intro.mp3):
+    "Greetings, young quest-seeker! Today, on your special birthday, a grand challenge awaits!
+     Touch this Crystal Ball to hear the first riddle, which will guide you through the ten
+     magical doors standing between you and your birthday prize! Are you ready?"
+
+
+Coughs (cough1.mp3 – cough4.mp3)
+    [Plays when Lincoln taps the orb while audio is already playing — interrupts the clue]
+    [No script — just record 4 different theatrical wizard coughs/throat clears]
+    Suggested variations:
+        cough1: one short sharp cough
+        cough2: two coughs in a row
+        cough3: a long drawn-out "ahem"
+        cough4: a cough followed by a grumble
+
+
+Nopes (nope1.mp3 – nope7.mp3)
+    [Plays when a wrong code is entered — keep each one short]
+    nope1: "Hmm... that is not correct."
+    nope2: "No, no, no. Try again."
+    nope3: "Not quite, young seeker. Look more carefully."
+    nope4: "That is not right. Think again."
+    nope5: "The door remains locked. Try once more."
+    nope6: "Incorrect! You can do it — keep trying."
+    nope7: "Not yet... I believe in you. Try again."
+
+
+==================================================
+All Files to Record
+==================================================
+
+    intro.mp3
+    Clue1.mp3 through Clue10.mp3
+    are-you-sure1.mp3
+    are-you-sure2.mp3
+    location.mp3
+    location-repeat.mp3
+    cough1.mp3, cough2.mp3, cough3.mp3, cough4.mp3
+    nope1.mp3, nope2.mp3, nope3.mp3, nope4.mp3, nope5.mp3, nope6.mp3, nope7.mp3
+
+    (unlock.mp3 and click.mp3 are sound effects — reuse from Lily's version or replace
+    with new ones if you prefer a different sound)
